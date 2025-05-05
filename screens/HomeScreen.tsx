@@ -20,7 +20,7 @@ export default function HomeScreen() {
       <HeaderTop />
       <ImageHeader />
       <SearchAndQuickAccess />
-
+       
       {/* Section : Statut des Vols */}
       <View style={{ paddingHorizontal: 16 }}>
         <Text style={{ fontSize: 18, fontWeight: 'bold', marginVertical: 10 }}>

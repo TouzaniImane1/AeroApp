@@ -1,20 +1,42 @@
-// screens/RealTimeFlights.tsx
+// screens/RealTimeFlights.tsx 
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import axios from 'axios';
+import { useRoute, RouteProp } from '@react-navigation/native';
+
+type RouteParams = {
+  query?: string;
+};
 
 const RealTimeFlights = () => {
   const [flights, setFlights] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const route = useRoute<RouteProp<Record<string, RouteParams>, string>>();
+  const searchQuery = route?.params?.query?.toLowerCase() || '';
+
   useEffect(() => {
-    axios.get('http://192.168.11.137:3000/flights/full')
-      .then(response => {
+    axios
+      .get('http://192.168.11.137:3000/flights/full')
+      .then((response) => {
         setFlights(response.data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
+
+  // Applique un filtre si une recherche a été saisie
+  const filteredFlights = flights.filter((flight) =>
+    flight.number?.toLowerCase().includes(searchQuery) ||
+    flight.to?.toLowerCase().includes(searchQuery) // uniquement la destination
+  );
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -22,11 +44,18 @@ const RealTimeFlights = () => {
       {loading ? (
         <ActivityIndicator />
       ) : (
-        flights.map((flight, i) => (
+        filteredFlights.map((flight, i) => (
           <View key={i} style={styles.card}>
             <View style={styles.row}>
               <Text style={styles.number}>{flight.number}</Text>
-              <Text style={[styles.status, { color: flight.color || '#007bff' }]}>{flight.status}</Text>
+              <Text
+                style={[
+                  styles.status,
+                  { color: flight.color || '#007bff' },
+                ]}
+              >
+                {flight.status}
+              </Text>
             </View>
             <Text style={styles.airline}>{flight.airline}</Text>
             <Text style={styles.route}>{flight.from} → {flight.to}</Text>

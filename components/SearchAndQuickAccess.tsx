@@ -7,6 +7,8 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // 👈
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import AirplaneIcon from '../assets/airplane-icon.png';
 import TaxiIcon from '../assets/Taxi-icon.png';
@@ -31,6 +33,14 @@ const quickItems = [
 
 export default function SearchAndQuickAccess() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [search, setSearch] = useState('');
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+
+  const handleSearch = () => {
+    if (search.trim() !== '') {
+      navigation.navigate('RealTimeFlights', { query: search.trim() }); // 👈 passe le texte saisi
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -45,8 +55,10 @@ export default function SearchAndQuickAccess() {
             placeholder="Numéro de vol ou destination"
             placeholderTextColor="#777"
             style={styles.input}
+            value={search}
+            onChangeText={setSearch}
           />
-          <TouchableOpacity style={styles.searchButton}>
+          <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
             <Text style={styles.searchButtonText}>Rechercher</Text>
           </TouchableOpacity>
         </View>
@@ -81,6 +93,7 @@ export default function SearchAndQuickAccess() {
     </View>
   );
 }
+// Ajoute ceci à la fin de SearchAndQuickAccess.tsx
 
 const styles = StyleSheet.create({
   container: {
@@ -157,7 +170,7 @@ const styles = StyleSheet.create({
   },
   quickItem: {
     width: '22%',
-    height: 100, // ← avant 90
+    height: 100,
     backgroundColor: '#fff',
     borderRadius: 16,
     justifyContent: 'center',
@@ -175,7 +188,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#EDF4FC',
   },
   iconImage: {
-    width: 38, // ← avant 28
+    width: 38,
     height: 38,
     marginBottom: 6,
     resizeMode: 'contain',
