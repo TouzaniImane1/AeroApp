@@ -29,7 +29,7 @@ export default function App() {
           component={RealTimeFlights}
           options={{ title: 'Vols en direct' }}
         />
-        <Stack.Screen name="AuthScreen" component={AuthScreen} />
+        <Stack.Screen name="AuthScreen" component={AuthScreen} /> 
 
       </Stack.Navigator>
     </NavigationContainer>
