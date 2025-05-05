@@ -2,7 +2,7 @@
 
 import React from 'react';
 import FlightSummary from '../components/FlightSummary'; // ⬅️ important
-import { ScrollView, View, Text, Button } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import HeaderTop from '../components/HeaderTop';
 import ImageHeader from '../components/ImageHeader';
 import SearchAndQuickAccess from '../components/SearchAndQuickAccess';
@@ -30,13 +30,27 @@ export default function HomeScreen() {
       </View>
 
       {/* Bouton : Navigation vers la page des vols en direct */}
-      <View style={{ paddingHorizontal: 16, marginTop: 10 }}>
-        <Button
-          title="Voir les vols en direct"
-          onPress={() => navigation.navigate('RealTimeFlights')}
-          color="#007bff"
-        />
-      </View>
+      <TouchableOpacity
+  style={{
+    backgroundColor: '#007bff',
+    paddingVertical: 14,
+    marginHorizontal: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 6,
+    elevation: 4,
+  }}
+  onPress={() => navigation.navigate('RealTimeFlights')}
+>
+  <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>
+    VOIR LES VOLS EN DIRECT
+  </Text>
+      </TouchableOpacity>
+
     </ScrollView>
   );
 }

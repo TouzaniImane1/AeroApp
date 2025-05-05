@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
 import RealTimeFlights from './screens/RealTimeFlights';
 import FlightsScreen from './screens/FlightsScreen';
+import AuthScreen from './screens/AuthScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,8 @@ export default function App() {
           component={RealTimeFlights}
           options={{ title: 'Vols en direct' }}
         />
+        <Stack.Screen name="AuthScreen" component={AuthScreen} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
