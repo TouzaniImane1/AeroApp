@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
 import RealTimeFlights from './screens/RealTimeFlights';
+import FlightsScreen from './screens/FlightsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +17,11 @@ export default function App() {
           name="HomeScreen"
           component={HomeScreen}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="FlightsScreen"
+          component={FlightsScreen}
+          options={{ title: 'Statut des vols' }}
         />
         <Stack.Screen
           name="RealTimeFlights"

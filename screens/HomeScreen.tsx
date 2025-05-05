@@ -1,15 +1,16 @@
 // screens/HomeScreen.tsx
 
 import React from 'react';
-import { ScrollView, Button } from 'react-native';
+import FlightSummary from '../components/FlightSummary'; // ⬅️ important
+import { ScrollView, View, Text, Button } from 'react-native';
 import HeaderTop from '../components/HeaderTop';
 import ImageHeader from '../components/ImageHeader';
 import SearchAndQuickAccess from '../components/SearchAndQuickAccess';
+//import FlightStatus from '../components/FlightStatus';//
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types';
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'HomeScreen'>;
+// Si tu n’utilises pas RootStackParamList, tu peux aussi remplacer par : any
+type NavigationProp = NativeStackNavigationProp<any>;
 
 export default function HomeScreen() {
   const navigation = useNavigation<NavigationProp>();
@@ -19,7 +20,23 @@ export default function HomeScreen() {
       <HeaderTop />
       <ImageHeader />
       <SearchAndQuickAccess />
-      <Button title="Voir les vols en direct" onPress={() => navigation.navigate('RealTimeFlights')} />
+
+      {/* Section : Statut des Vols */}
+      <View style={{ paddingHorizontal: 16 }}>
+        <Text style={{ fontSize: 18, fontWeight: 'bold', marginVertical: 10 }}>
+          Statut des Vols
+        </Text>
+        <FlightSummary />
+      </View>
+
+      {/* Bouton : Navigation vers la page des vols en direct */}
+      <View style={{ paddingHorizontal: 16, marginTop: 10 }}>
+        <Button
+          title="Voir les vols en direct"
+          onPress={() => navigation.navigate('FlightsScreen')}
+          color="#007bff"
+        />
+      </View>
     </ScrollView>
   );
 }
