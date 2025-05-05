@@ -1,4 +1,4 @@
-// screens/RealTimeFlightsScreen.tsx
+// screens/RealTimeFlights.tsx
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import axios from 'axios';
@@ -8,7 +8,7 @@ const RealTimeFlights = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://192.168.11.137:3000/flights/full') // Remplace ici aussi
+    axios.get('http://192.168.11.137:3000/flights/full')
       .then(response => {
         setFlights(response.data);
         setLoading(false);
@@ -18,15 +18,25 @@ const RealTimeFlights = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Vols en temps réel près de Fès</Text>
-      {loading ? <ActivityIndicator /> : flights.map((flight, i) => (
-        <View key={i} style={styles.card}>
-          <Text style={styles.flight}>{flight.number} - {flight.airline}</Text>
-          <Text style={styles.route}>{flight.from} → {flight.to}</Text>
-          <Text style={styles.detail}>Heure : {flight.time}</Text>
-          <Text style={[styles.status, { color: flight.color || 'black' }]}>Statut : {flight.status}</Text>
-        </View>
-      ))}
+      <Text style={styles.title}>✈️ Détails des vols vers/depuis Fès</Text>
+      {loading ? (
+        <ActivityIndicator />
+      ) : (
+        flights.map((flight, i) => (
+          <View key={i} style={styles.card}>
+            <View style={styles.row}>
+              <Text style={styles.number}>{flight.number}</Text>
+              <Text style={[styles.status, { color: flight.color || '#007bff' }]}>{flight.status}</Text>
+            </View>
+            <Text style={styles.airline}>{flight.airline}</Text>
+            <Text style={styles.route}>{flight.from} → {flight.to}</Text>
+            <Text style={styles.detail}>🕓 Heure : {flight.time}</Text>
+            <Text style={styles.detail}>⏳ Durée : {flight.duration}</Text>
+            <Text style={styles.detail}>💶 Prix estimé : {flight.price}</Text>
+            <Text style={styles.detail}>🛫 Terminal : {flight.terminal} | Porte : {flight.gate}</Text>
+          </View>
+        ))
+      )}
     </ScrollView>
   );
 };
@@ -35,17 +45,26 @@ const styles = StyleSheet.create({
   container: { padding: 16 },
   title: { fontSize: 18, fontWeight: 'bold', marginBottom: 16 },
   card: {
-    backgroundColor: '#f0f9ff',
+    backgroundColor: '#fff',
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 12,
     marginBottom: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: '#2196f3',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 3,
   },
-  flight: { fontWeight: 'bold', fontSize: 16 },
-  route: { fontSize: 14, marginBottom: 4 },
-  detail: { fontSize: 13, color: '#555' },
-  status: { marginTop: 4, fontWeight: 'bold' },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  number: { fontWeight: 'bold', fontSize: 16 },
+  status: { fontWeight: 'bold', fontSize: 14 },
+  airline: { fontSize: 14, color: '#666' },
+  route: { fontSize: 15, marginVertical: 4 },
+  detail: { fontSize: 13, color: '#444', marginVertical: 1 },
 });
 
 export default RealTimeFlights;

@@ -8,7 +8,7 @@ const FlightSummary = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://192.168.X.X:3000/flights/short') // mets ton IP
+    axios.get('http://192.168.11.137:3000/flights/short') // mets ton IP
       .then(response => {
         setFlights(response.data.slice(0, 3));
         setLoading(false);
@@ -18,7 +18,6 @@ const FlightSummary = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Statut des Vols</Text>
       {loading ? <ActivityIndicator /> : flights.map((flight, i) => (
         <View key={i} style={[styles.card, { borderLeftColor: flight.color || '#007bff' }]}>
           <View style={{ flex: 1 }}>

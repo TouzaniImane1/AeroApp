@@ -50,16 +50,6 @@ export default function HeaderTop() {
             }}
           />
         </View>
-        <TouchableOpacity
-          style={{
-            backgroundColor: '#F0F0F0',
-            borderRadius: 8,
-            padding: 6,
-            marginRight: 12,
-          }}
-        >
-          <Ionicons name="search" size={16} color="#333" />
-        </TouchableOpacity>
         <Image
           source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }}
           style={{ width: 32, height: 32, borderRadius: 16 }}

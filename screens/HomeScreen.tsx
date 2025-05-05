@@ -33,7 +33,7 @@ export default function HomeScreen() {
       <View style={{ paddingHorizontal: 16, marginTop: 10 }}>
         <Button
           title="Voir les vols en direct"
-          onPress={() => navigation.navigate('FlightsScreen')}
+          onPress={() => navigation.navigate('RealTimeFlights')}
           color="#007bff"
         />
       </View>
