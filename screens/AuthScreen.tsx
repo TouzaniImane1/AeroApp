@@ -5,172 +5,179 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Switch,
   Alert,
 } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default function AuthScreen() {
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    clientId: 'YOUR_EXPO_CLIENT_ID',
+  });
 
   const handleSubmit = () => {
-    if (isSignUp && !acceptTerms) {
-      Alert.alert('Veuillez accepter les conditions.');
+    if (!email || !password || (!isLogin && (!name || !confirmPassword))) {
+      Alert.alert('Tous les champs sont requis.');
       return;
     }
-
-    if (isSignUp && password !== confirm) {
+    if (!isLogin && password !== confirmPassword) {
       Alert.alert('Les mots de passe ne correspondent pas.');
       return;
     }
+    Alert.alert(isLogin ? 'Connexion réussie !' : 'Inscription réussie !');
+  };
 
-    Alert.alert(isSignUp ? 'Compte créé' : 'Connexion réussie');
+  const handleGoogleLogin = () => {
+    promptAsync();
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Connexion</Text>
-      <Text style={styles.subtitle}>
-        {isSignUp
-          ? 'Créez votre compte pour accéder à toutes les fonctionnalités'
-          : 'Connectez-vous pour accéder à toutes les fonctionnalités'}
+      <Text style={styles.title}>
+        {isLogin ? 'Connectez-vous !' : 'Laisse-moi te connaître !'}
       </Text>
 
-      {isSignUp && (
-        <View style={styles.row}>
-          <TextInput
-            style={[styles.input, { flex: 1, marginRight: 8 }]}
-            placeholder="Prénom"
-            value={firstName}
-            onChangeText={setFirstName}
-          />
-          <TextInput
-            style={[styles.input, { flex: 1 }]}
-            placeholder="Nom"
-            value={lastName}
-            onChangeText={setLastName}
-          />
-        </View>
+      {!isLogin && (
+        <TextInput
+          style={styles.input}
+          placeholder="Votre nom"
+          value={name}
+          onChangeText={setName}
+        />
       )}
-
       <TextInput
         style={styles.input}
-        placeholder="votre@email.com"
+        placeholder="Adresse email"
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
       />
       <TextInput
         style={styles.input}
         placeholder="Mot de passe"
-        secureTextEntry
         value={password}
         onChangeText={setPassword}
+        secureTextEntry
       />
-      {isSignUp && (
+      {!isLogin && (
         <TextInput
           style={styles.input}
           placeholder="Confirmer le mot de passe"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
           secureTextEntry
-          value={confirm}
-          onChangeText={setConfirm}
         />
-      )}
-
-      {isSignUp && (
-        <View style={styles.checkboxContainer}>
-          <Switch value={acceptTerms} onValueChange={setAcceptTerms} />
-          <Text style={styles.checkboxLabel}>
-            J’accepte les conditions générales d’utilisation
-          </Text>
-        </View>
       )}
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>
-          {isSignUp ? 'Créer un compte' : 'Se connecter'}
+          {isLogin ? 'Se connecter' : 'Créer un compte'}
+        </Text>
+        <Ionicons
+          name="arrow-forward-circle-outline"
+          size={24}
+          color="#fff"
+          style={{ marginLeft: 8 }}
+        />
+      </TouchableOpacity>
+
+      <Text style={styles.or}>— ou —</Text>
+
+      <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>
+        <Ionicons
+          name="logo-google"
+          size={20}
+          color="#333"
+          style={{ marginRight: 6 }}
+        />
+        <Text style={{ color: '#333' }}>Continuer avec Google</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
+        <Text style={styles.toggle}>
+          {isLogin
+            ? "Pas encore inscrit ? S'inscrire"
+            : 'Déjà un compte ? Se connecter'}
         </Text>
       </TouchableOpacity>
-
-      <Text style={styles.separator}>— ou —</Text>
-
-      <TouchableOpacity style={styles.googleButton}>
-        <AntDesign name="google" size={20} color="#000" />
-        <Text style={styles.googleText}>Continuer avec Google</Text>
-      </TouchableOpacity>
-
-      <View style={styles.footerRow}>
-        <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
-          <Text style={styles.footerLink}>
-            {isSignUp ? 'Se connecter' : 'S’inscrire'}
-          </Text>
-        </TouchableOpacity>        
-      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
     flex: 1,
-    backgroundColor: '#fff',
+    padding: 24,
+    justifyContent: 'center',
+    backgroundColor: '#f0f6ff',
   },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 6 },
-  subtitle: { fontSize: 14, color: '#444', marginBottom: 20 },
+  title: {
+    fontSize: 28,
+    fontWeight: '600',
+    color: '#1d3c78',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
   input: {
-    backgroundColor: '#F2F2F2',
-    padding: 12,
-    borderRadius: 10,
-    marginBottom: 12,
-    fontSize: 14,
-  },
-  row: { flexDirection: 'row' },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  checkboxLabel: {
-    marginLeft: 8,
-    fontSize: 13,
-    color: '#333',
+    height: 50,
+    borderRadius: 30,
+    paddingHorizontal: 20,
+    backgroundColor: '#ffffff',
+    marginBottom: 16,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#d3e0f0',
   },
   button: {
-    backgroundColor: '#1E40AF',
-    paddingVertical: 12,
-    borderRadius: 10,
+    flexDirection: 'row',
+    backgroundColor: '#1a73e8',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 30,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: 8,
+    shadowColor: '#1a73e8',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 4,
   },
-  buttonText: { color: '#fff', fontSize: 16 },
-  separator: {
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  or: {
     textAlign: 'center',
-    marginVertical: 14,
-    color: '#777',
+    marginVertical: 20,
+    color: '#888',
+    fontWeight: '500',
   },
   googleButton: {
+    flexDirection: 'row',
     borderWidth: 1,
-    borderColor: '#ccc',
-    paddingVertical: 12,
-    borderRadius: 10,
+    borderColor: '#c9d5e9',
+    backgroundColor: '#fff',
+    paddingVertical: 14,
+    borderRadius: 30,
+    justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 8,
   },
-  googleText: { fontSize: 14, color: '#000' },
-  footerRow: {
-    marginTop: 20,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 6,
+  toggle: {
+    textAlign: 'center',
+    marginTop: 24,
+    fontSize: 15,
+    color: '#1a73e8',
+    fontWeight: '500',
   },
-  footerLink: { color: '#1E40AF', fontSize: 14 },
-  footerText: { fontSize: 14, color: '#555' },
 });
