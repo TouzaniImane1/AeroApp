@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // 👈
+import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import AirplaneIcon from '../assets/airplane-icon.png';
@@ -15,7 +15,7 @@ import TaxiIcon from '../assets/Taxi-icon.png';
 import ParkingIcon from '../assets/parking-icon.jpg';
 import ShoppingIcon from '../assets/shopping-icon.png';
 import RestaurantIcon from '../assets/restaurant-icon.png';
-import LuggageIcon from '../assets/luggage-icon.png';
+import HotelIcon from '../assets/hotel.png';
 import MapIcon from '../assets/map-icon.png';
 import InfoIcon from '../assets/info-icon.png';
 import SearchIcon from '../assets/search-icon.png';
@@ -26,7 +26,7 @@ const quickItems = [
   { label: 'Transport', icon: TaxiIcon },
   { label: 'Shopping', icon: ShoppingIcon },
   { label: 'Restaurants', icon: RestaurantIcon },
-  { label: 'Bagages', icon: LuggageIcon },
+  { label: 'Hôtels', icon: HotelIcon },
   { label: 'Plan', icon: MapIcon },
   { label: 'Infos', icon: InfoIcon },
 ];
@@ -38,7 +38,7 @@ export default function SearchAndQuickAccess() {
 
   const handleSearch = () => {
     if (search.trim() !== '') {
-      navigation.navigate('RealTimeFlights', { query: search.trim() }); // 👈 passe le texte saisi
+      navigation.navigate('RealTimeFlights', { query: search.trim() });
     }
   };
 
@@ -68,32 +68,43 @@ export default function SearchAndQuickAccess() {
       <Text style={styles.sectionTitle}>Accès rapide</Text>
 
       <View style={styles.grid}>
-        {quickItems.map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.quickItem,
-              activeIndex === index && styles.activeCard,
-            ]}
-            onPressIn={() => setActiveIndex(index)}
-            onPressOut={() => setActiveIndex(null)}
-          >
-            <Image source={item.icon} style={styles.iconImage} />
-            <Text
+        {quickItems.map((item, index) => {
+          const handlePress = () => {
+            if (item.label === 'Hôtels') {
+              navigation.navigate('HotelsScreen');
+            } else {
+              console.log('Accès rapide cliqué :', item.label);
+              // Tu peux ajouter ici les autres redirections si besoin
+            }
+          };
+
+          return (
+            <TouchableOpacity
+              key={index}
               style={[
-                styles.iconLabel,
-                activeIndex === index && styles.activeLabel,
+                styles.quickItem,
+                activeIndex === index && styles.activeCard,
               ]}
+              onPressIn={() => setActiveIndex(index)}
+              onPressOut={() => setActiveIndex(null)}
+              onPress={handlePress}
             >
-              {item.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Image source={item.icon} style={styles.iconImage} />
+              <Text
+                style={[
+                  styles.iconLabel,
+                  activeIndex === index && styles.activeLabel,
+                ]}
+              >
+                {item.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </View>
   );
 }
-// Ajoute ceci à la fin de SearchAndQuickAccess.tsx
 
 const styles = StyleSheet.create({
   container: {

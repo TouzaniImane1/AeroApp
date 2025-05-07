@@ -7,6 +7,7 @@ import HomeScreen from './screens/HomeScreen';
 import RealTimeFlights from './screens/RealTimeFlights';
 import FlightsScreen from './screens/FlightsScreen';
 import AuthScreen from './screens/AuthScreen';
+import HotelsScreen from './screens/HotelsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,11 @@ export default function App() {
           component={HomeScreen}
           options={{ headerShown: false }}
         />
+        <Stack.Screen 
+        name="HotelsScreen" 
+        component={HotelsScreen} 
+        />
+
         <Stack.Screen
           name="FlightsScreen"
           component={FlightsScreen}
