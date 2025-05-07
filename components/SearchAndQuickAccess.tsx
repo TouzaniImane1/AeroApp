@@ -46,6 +46,25 @@ export default function SearchAndQuickAccess() {
     }
   };
 
+  const handleQuickAccess = (label: string) => {
+    switch (label) {
+      case 'Hôtels':
+        navigation.navigate('HotelsScreen');
+        break;
+      case 'Restaurants':
+        navigation.navigate('RestaurantsScreen');
+        break;
+      case 'Shopping':
+        navigation.navigate('ShoppingScreen');
+        break;
+      case 'Transport':
+        setTransportModalVisible(true);
+        break;
+      default:
+        console.log('Accès rapide cliqué :', label);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Zone recherche */}
@@ -72,40 +91,28 @@ export default function SearchAndQuickAccess() {
       <Text style={styles.sectionTitle}>Accès rapide</Text>
 
       <View style={styles.grid}>
-        {quickItems.map((item, index) => {
-          const handlePress = () => {
-            if (item.label === 'Hôtels') {
-              navigation.navigate('HotelsScreen');
-            } else if (item.label === 'Transport') {
-              setTransportModalVisible(true);
-            } else {
-              console.log('Accès rapide cliqué :', item.label);
-            }
-          };
-
-          return (
-            <TouchableOpacity
-              key={index}
+        {quickItems.map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[
+              styles.quickItem,
+              activeIndex === index && styles.activeCard,
+            ]}
+            onPressIn={() => setActiveIndex(index)}
+            onPressOut={() => setActiveIndex(null)}
+            onPress={() => handleQuickAccess(item.label)}
+          >
+            <Image source={item.icon} style={styles.iconImage} />
+            <Text
               style={[
-                styles.quickItem,
-                activeIndex === index && styles.activeCard,
+                styles.iconLabel,
+                activeIndex === index && styles.activeLabel,
               ]}
-              onPressIn={() => setActiveIndex(index)}
-              onPressOut={() => setActiveIndex(null)}
-              onPress={handlePress}
             >
-              <Image source={item.icon} style={styles.iconImage} />
-              <Text
-                style={[
-                  styles.iconLabel,
-                  activeIndex === index && styles.activeLabel,
-                ]}
-              >
-                {item.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
+              {item.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
       {/* Modal Transport */}
@@ -171,6 +178,9 @@ export default function SearchAndQuickAccess() {
     </View>
   );
 }
+
+// Styles identiques
+
 
 const styles = StyleSheet.create({
   container: {

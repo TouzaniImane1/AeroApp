@@ -8,6 +8,8 @@ import RealTimeFlights from './screens/RealTimeFlights';
 import FlightsScreen from './screens/FlightsScreen';
 import AuthScreen from './screens/AuthScreen';
 import HotelsScreen from './screens/HotelsScreen';
+import RestaurantsScreen from './screens/RestaurantsScreen';
+import ShoppingScreen from './screens/ShoppingScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,7 +27,17 @@ export default function App() {
         component={HotelsScreen} 
         options={{ title: "🏨 Hôtels près de l'Aéroport" }}
         />
+        <Stack.Screen 
+        name="ShoppingScreen" 
+        component={ShoppingScreen} 
+        options={{ title: "🛍️ Boutiques de l'Aéroport Fès–Saïss" }}
 
+        />
+        <Stack.Screen 
+        name="RestaurantsScreen" 
+        component={RestaurantsScreen} 
+        options={{ title: '🍽️ Restaurants disponibles dans l’aéroport' }}
+        />
         <Stack.Screen
           name="FlightsScreen"
           component={FlightsScreen}
