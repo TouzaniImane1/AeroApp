@@ -1,19 +1,21 @@
 // screens/HomeScreen.tsx
 
-import React from 'react';
 import FlightSummary from '../components/FlightSummary'; // ⬅️ important
-import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { ScrollView, View,Modal, Text, TouchableOpacity } from 'react-native';
 import HeaderTop from '../components/HeaderTop';
 import ImageHeader from '../components/ImageHeader';
 import SearchAndQuickAccess from '../components/SearchAndQuickAccess';
 //import FlightStatus from '../components/FlightStatus';//
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React, { useState } from 'react';
+
 // Si tu n’utilises pas RootStackParamList, tu peux aussi remplacer par : any
 type NavigationProp = NativeStackNavigationProp<any>;
 
 export default function HomeScreen() {
   const navigation = useNavigation<NavigationProp>();
+  const [transportModalVisible, setTransportModalVisible] = useState(false);
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#f7f8fa' }}>

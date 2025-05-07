@@ -6,9 +6,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Modal,
+  ScrollView
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Linking } from 'react-native';
 
 import AirplaneIcon from '../assets/airplane-icon.png';
 import TaxiIcon from '../assets/Taxi-icon.png';
@@ -34,6 +37,7 @@ const quickItems = [
 export default function SearchAndQuickAccess() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [search, setSearch] = useState('');
+  const [transportModalVisible, setTransportModalVisible] = useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const handleSearch = () => {
@@ -72,9 +76,10 @@ export default function SearchAndQuickAccess() {
           const handlePress = () => {
             if (item.label === 'Hôtels') {
               navigation.navigate('HotelsScreen');
+            } else if (item.label === 'Transport') {
+              setTransportModalVisible(true);
             } else {
               console.log('Accès rapide cliqué :', item.label);
-              // Tu peux ajouter ici les autres redirections si besoin
             }
           };
 
@@ -102,6 +107,67 @@ export default function SearchAndQuickAccess() {
           );
         })}
       </View>
+
+      {/* Modal Transport */}
+      <Modal
+        visible={transportModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setTransportModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>🚕 Tarifs des Taxis depuis l’Aéroport</Text>
+            <ScrollView style={{ maxHeight: 300 }}>
+              {[
+                ["Volubilis - My. Idriss - Meknès", "800 DH"],
+                ["Moyen Atlas", "800 DH"],
+                ["Fès", "120 DH"],
+                ["Volubilis - My. Idriss", "500 DH"],
+                ["Meknès", "400 DH"],
+                ["Bhalil - Sefrou", "400 DH"],
+                ["My Yacoub", "300 DH"],
+                ["Sidi Harazem", "300 DH"],
+                ["Rabat", "1300 DH"],
+                ["Casablanca", "1200 DH"],
+                ["Aéroport Med V", "1200 DH"],
+                ["Tanger", "1200 DH"],
+                ["Aéroport Tanger", "800 DH"],
+                ["Chaouen", "1200 DH"],
+                ["Tétouan", "1200 DH"],
+                ["Al Hoceima", "1300 DH"],
+                ["Oujda", "1300 DH"],
+                ["Nador", "1300 DH"],
+                ["Taza", "500 DH"],
+                ["Marrakech", "2000 DH"],
+                ["Ifrane", "300 DH"]
+              ].map(([dest, price], i) => (
+                <View key={i} style={styles.tarifRow}>
+                  <Text style={styles.tarifDestination}>{dest}</Text>
+                  <Text style={styles.tarifPrice}>{price}</Text>
+                </View>
+              ))}
+            </ScrollView>
+
+            <View style={styles.separator} />
+
+            <Text style={styles.sectionTitle}>📞 Numéros utiles</Text>
+            <TouchableOpacity style={styles.phoneButton} onPress={() => Linking.openURL('tel:0535622659')}>
+              <Text style={styles.phoneButtonText}> Wilaya : 05 35 62 26 59</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.phoneButton} onPress={() => Linking.openURL('tel:0535622705')}>
+              <Text style={styles.phoneButtonText}> Renseignements : 05 35 62 27 05</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.phoneButton} onPress={() => Linking.openURL('tel:0535624808')}>
+              <Text style={styles.phoneButtonText}> Aéroport Fès–Saïss : 05 35 62 48 08</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setTransportModalVisible(false)} style={styles.closeButton}>
+              <Text style={styles.closeText}>Fermer</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -213,4 +279,63 @@ const styles = StyleSheet.create({
     color: '#4A90E2',
     fontWeight: '700',
   },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.4)'
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    margin: 20,
+    borderRadius: 12,
+    padding: 20
+  },
+  modalTitle: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginBottom: 16,
+    textAlign: 'center'
+  },
+  tarifRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 4
+  },
+  tarifDestination: {
+    fontSize: 14,
+    color: '#333'
+  },
+  tarifPrice: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1a73e8'
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#ddd',
+    marginVertical: 12
+  },
+  phoneButton: {
+    backgroundColor: '#eaf1ff',
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 6,
+    alignItems: 'center'
+  },
+  phoneButtonText: {
+    color: '#1a73e8',
+    fontWeight: '600',
+    fontSize: 14
+  },
+  closeButton: {
+    marginTop: 16,
+    backgroundColor: '#ffdddd',
+    padding: 10,
+    borderRadius: 8,
+    alignSelf: 'center'
+  },
+  closeText: {
+    color: '#d00',
+    fontWeight: '600'
+  }
 });

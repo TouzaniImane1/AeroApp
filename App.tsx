@@ -23,6 +23,7 @@ export default function App() {
         <Stack.Screen 
         name="HotelsScreen" 
         component={HotelsScreen} 
+        options={{ title: "🏨 Hôtels près de l'Aéroport" }}
         />
 
         <Stack.Screen

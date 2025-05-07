@@ -40,13 +40,82 @@ const hotels = [
     stars: 5,
     image: require('../assets/hotel3.jpg'),
     url: 'https://www.booking.com/hotel/ma/riad-fes.fr.html'
+  },
+  {
+    name: 'Hotel Fès Inn',
+    address: '47, rue 2, Sidi Brahim, Fès',
+    tags: ['Wi-Fi', 'Parking', 'Climatisation'],
+    price: '470 DH',
+    distance: '3.5 km',
+    stars: 3,
+    image: require('../assets/hotel4.jpg'),
+    url: 'https://www.booking.com/hotel/ma/fes-inn-and-spa.fr.html'
+  },
+  {
+    name: 'Hotel Perla',
+    address: '12 rue de la Palestine, Fès Ville Nouvelle',
+    tags: ['Wi-Fi gratuit', 'Petit déjeuner inclus'],
+    price: '320 DH',
+    distance: '2.8 km',
+    stars: 2,
+    image: require('../assets/hotel5.jpg'),
+    url: 'https://www.booking.com/hotel/ma/perla.fr.html'
+  },
+  {
+    name: 'Hotel Nouzha',
+    address: '7 Rue Hassan Dkhissi, Fès Ville Nouvelle',
+    tags: ['Wi-Fi', 'Restaurant'],
+    price: '400 DH',
+    distance: '4.3 km',
+    stars: 3,
+    image: require('../assets/hotel6.jpg'),
+    url: 'https://www.booking.com/hotel/ma/nouzha.fr.html'
+  },
+  {
+    name: 'Riad Layalina Fes',
+    address: '10 Derb El Miter, Fès El Bali',
+    tags: ['Wi-Fi', 'Terrasse', 'Piscine', 'Petit déjeuner'],
+    price: '720 DH',
+    distance: '13.8 km',
+    stars: 4,
+    image: require('../assets/hotel7.jpg'),
+    url: 'https://www.booking.com/hotel/ma/riad-layalina-fes.fr.html'
+  },
+  {
+    name: 'Barcelo Fes Medina',
+    address: '53 Avenue Hassan II, Fès Ville Nouvelle',
+    tags: ['Wi-Fi gratuit', 'Spa', 'Piscine extérieure'],
+    price: '850 DH',
+    distance: '8.1 km',
+    stars: 4,
+    image: require('../assets/hotel8.jpg'),
+    url: 'https://www.booking.com/hotel/ma/barcelo-fes-medina.fr.html'
+  },
+  {
+    name: 'Palais Medina & Spa',
+    address: 'Boulevard Allal El Fassi, Fès',
+    tags: ['Wi-Fi', 'Spa', 'Piscine', 'Vue sur jardin'],
+    price: '1100 DH',
+    distance: '6.9 km',
+    stars: 5,
+    image: require('../assets/hotel9.jpg'),
+    url: 'https://www.booking.com/hotel/ma/palais-medina-spa.fr.html'
+  },
+  {
+    name: 'Riad Sara',
+    address: '17 Derb El Gabasse, Douh, Batha, Fès Médina',
+    tags: ['Wi-Fi gratuit', 'Terrasse', 'Restaurant'],
+    price: '600 DH',
+    distance: '12.2 km',
+    stars: 4,
+    image: require('../assets/hotel10.jpg'),
+    url: 'https://www.booking.com/hotel/ma/riad-sara.fr.html'
   }
 ];
 
 export default function HotelsScreen() {
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>🏨 Hôtels près de l'Aéroport</Text>
       {hotels.map((hotel, index) => (
         <View key={index} style={styles.card}>
           <Image source={hotel.image} style={styles.image} />
@@ -63,35 +132,24 @@ export default function HotelsScreen() {
           </View>
           <Text style={styles.price}>{hotel.price} <Text style={styles.nuit}>/nuit</Text></Text>
           <View style={styles.bottom}>
-            <TouchableOpacity onPress={() => Linking.openURL(hotel.url)} style={styles.booking}>
-              <Ionicons name="call-outline" size={18} color="#1a73e8" />
-              <Text style={styles.bookingText}>Réserver</Text>
+            <TouchableOpacity onPress={() => Linking.openURL(hotel.url)} style={styles.bookingNew}>
+              <Ionicons name="bed-outline" size={18} color="#fff" />
+              <Text style={styles.bookingTextNew}>Réserver sur Booking</Text>
             </TouchableOpacity>
           </View>
         </View>
       ))}
 
       {/* Lien vers Booking.com en bas de page */}
-      <View style={{
-        backgroundColor: '#eaf1ff',
-        padding: 16,
-        borderRadius: 12,
-        marginBottom: 30
-      }}>
-        <Text style={{ fontWeight: 'bold', marginBottom: 4 }}>Plus d'options sur Booking.com</Text>
-        <Text style={{ color: '#777', marginBottom: 10 }}>Trouvez d'autres hôtels à Fès</Text>
+      <View style={styles.bookingBox}>
+        <Text style={styles.bookingTitle}>📍 Explorer encore plus d'hôtels à Fès</Text>
+        <Text style={styles.bookingSubtitle}>Booking.com vous propose une sélection complète d'établissements selon vos besoins</Text>
         <TouchableOpacity
           onPress={() => Linking.openURL('https://www.booking.com/city/ma/fes.fr.html')}
-          style={{
-            backgroundColor: '#fff',
-            padding: 10,
-            borderWidth: 1,
-            borderColor: '#ccc',
-            borderRadius: 8,
-            alignItems: 'center'
-          }}
+          style={styles.bookingMainButton}
         >
-          <Text style={{ color: '#1a73e8' }}>Voir sur Booking.com</Text>
+          <Ionicons name="search-outline" size={18} color="#1a73e8" />
+          <Text style={styles.bookingMainText}>Voir plus d'hôtels sur Booking.com</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -166,16 +224,57 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 10
   },
-  booking: {
+  bookingNew: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#e8f0fe',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 20
+    backgroundColor: '#1a73e8',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 30,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+    elevation: 4
   },
-  bookingText: {
+  bookingTextNew: {
+    color: '#fff',
+    fontWeight: '600',
+    marginLeft: 8,
+    fontSize: 14
+  },
+  bookingBox: {
+    backgroundColor: '#eaf1ff',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 30,
+    alignItems: 'center'
+  },
+  bookingTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 6,
+    color: '#333'
+  },
+  bookingSubtitle: {
+    color: '#555',
+    marginBottom: 12,
+    textAlign: 'center'
+  },
+  bookingMainButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: '#ccc'
+  },
+  bookingMainText: {
     color: '#1a73e8',
-    marginLeft: 6
+    fontWeight: '600',
+    fontSize: 14,
+    marginLeft: 8
   }
 });
