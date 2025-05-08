@@ -8,8 +8,9 @@ const FlightSummary = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://192.168.11.105:3000/flights/short') // mets ton IP
+    axios.get('http://192.168.0.110:3000/flights/short') // mets ton IP
       .then(response => {
+        
         setFlights(response.data.slice(0, 3));
         setLoading(false);
       })

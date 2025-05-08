@@ -26,7 +26,7 @@ import SearchIcon from '../assets/search-icon.png';
 const quickItems = [
   { label: 'Mes Vols', icon: AirplaneIcon },
   { label: 'Parking', icon: ParkingIcon },
-  { label: 'Transport', icon: TaxiIcon },
+  { label: 'Taxis Aéroport', icon: TaxiIcon },
   { label: 'Shopping', icon: ShoppingIcon },
   { label: 'Restaurants', icon: RestaurantIcon },
   { label: 'Hôtels', icon: HotelIcon },
@@ -57,7 +57,7 @@ export default function SearchAndQuickAccess() {
       case 'Shopping':
         navigation.navigate('ShoppingScreen');
         break;
-      case 'Transport':
+      case 'Taxis Aéroport':
         setTransportModalVisible(true);
         break;
       default:

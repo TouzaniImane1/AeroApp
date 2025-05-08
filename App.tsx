@@ -10,6 +10,7 @@ import AuthScreen from './screens/AuthScreen';
 import HotelsScreen from './screens/HotelsScreen';
 import RestaurantsScreen from './screens/RestaurantsScreen';
 import ShoppingScreen from './screens/ShoppingScreen';
+import TransportScreen from './screens/TransportScreen'; // ✅ import ajouté
 
 const Stack = createNativeStackNavigator();
 
@@ -23,20 +24,24 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen 
-        name="HotelsScreen" 
-        component={HotelsScreen} 
-        options={{ title: "🏨 Hôtels près de l'Aéroport" }}
+          name="HotelsScreen" 
+          component={HotelsScreen} 
+          options={{ title: "🏨 Hôtels près de l'Aéroport" }} 
         />
         <Stack.Screen 
-        name="ShoppingScreen" 
-        component={ShoppingScreen} 
-        options={{ title: "🛍️ Boutiques de l'Aéroport Fès–Saïss" }}
-
+          name="TransportScreen" 
+          component={TransportScreen} 
+          options={{ title: "🚕 Transport à proximité" }} 
         />
         <Stack.Screen 
-        name="RestaurantsScreen" 
-        component={RestaurantsScreen} 
-        options={{ title: '🍽️ Restaurants disponibles dans l’aéroport' }}
+          name="ShoppingScreen" 
+          component={ShoppingScreen} 
+          options={{ title: "🛍️ Boutiques de l'Aéroport Fès–Saïss" }} 
+        />
+        <Stack.Screen 
+          name="RestaurantsScreen" 
+          component={RestaurantsScreen} 
+          options={{ title: '🍽️ Restaurants disponibles dans l’aéroport' }} 
         />
         <Stack.Screen
           name="FlightsScreen"
@@ -48,8 +53,10 @@ export default function App() {
           component={RealTimeFlights}
           options={{ title: 'Vols en direct' }}
         />
-        <Stack.Screen name="AuthScreen" component={AuthScreen} /> 
-
+        <Stack.Screen 
+          name="AuthScreen" 
+          component={AuthScreen} 
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
