@@ -216,7 +216,7 @@ export default function HomeScreen() {
                 style={{ width: 34, height: 24}}
               />
             </View>
-            <Text style={{ fontSize: 14, marginBottom: 10 }}>Taxi Aéroport</Text>
+            <Text style={{ fontSize: 14, marginBottom: 10 }}>Transport</Text>
             <TouchableOpacity
               style={{
                 borderWidth: 1,
