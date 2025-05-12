@@ -22,8 +22,10 @@ const RealTimeFlights = () => {
   const searchQuery = route?.params?.query?.toLowerCase() || '';
 
   useEffect(() => {
+    /*axios
+      .get('http://10.1.6.247:3000/flights/full')*/
     axios
-      .get('http://192.168.0.110:3000/flights/full')
+      .get('http://192.168.11.105:3000/flights/full')
       .then((response) => {
         setFlights(response.data);
         setLoading(false);

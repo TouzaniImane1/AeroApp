@@ -14,7 +14,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Linking } from 'react-native';
 
 import AirplaneIcon from '../assets/airplane-icon.png';
-import TaxiIcon from '../assets/Taxi-icon.png';
+import TaxiIcon from '../assets/train-icon.png';
 import ParkingIcon from '../assets/parking-icon.jpg';
 import ShoppingIcon from '../assets/shopping-icon.png';
 import RestaurantIcon from '../assets/restaurant-icon.png';
@@ -26,7 +26,7 @@ import SearchIcon from '../assets/search-icon.png';
 const quickItems = [
   { label: 'Mes Vols', icon: AirplaneIcon },
   { label: 'Parking', icon: ParkingIcon },
-  { label: 'Taxis Aéroport', icon: TaxiIcon },
+  { label: 'Transport', icon: TaxiIcon },
   { label: 'Shopping', icon: ShoppingIcon },
   { label: 'Restaurants', icon: RestaurantIcon },
   { label: 'Hôtels', icon: HotelIcon },
@@ -57,7 +57,7 @@ export default function SearchAndQuickAccess() {
       case 'Shopping':
         navigation.navigate('ShoppingScreen');
         break;
-      case 'Taxis Aéroport':
+      case 'Transport':
         setTransportModalVisible(true);
         break;
       default:
@@ -158,16 +158,22 @@ export default function SearchAndQuickAccess() {
 
             <View style={styles.separator} />
 
-            <Text style={styles.sectionTitle}>📞 Numéros utiles</Text>
-            <TouchableOpacity style={styles.phoneButton} onPress={() => Linking.openURL('tel:0535622659')}>
-              <Text style={styles.phoneButtonText}> Wilaya : 05 35 62 26 59</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.phoneButton} onPress={() => Linking.openURL('tel:0535622705')}>
-              <Text style={styles.phoneButtonText}> Renseignements : 05 35 62 27 05</Text>
+            <Text style={styles.sectionTitle}>☎️ Numéros utiles</Text>
+            <TouchableOpacity style={styles.phoneButton} onPress={() => Linking.openURL('tel:05 35 62 26 59')}>
+              <Text style={styles.phoneButtonText}> Wilaya de Fes-Meknes : 05 35 62 26 59</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.phoneButton} onPress={() => Linking.openURL('tel:0535624808')}>
               <Text style={styles.phoneButtonText}> Aéroport Fès–Saïss : 05 35 62 48 08</Text>
             </TouchableOpacity>
+            <Text style={styles.sectionTitle}>🚆 Autre Options</Text>
+
+            <TouchableOpacity
+              style={styles.phoneButton}
+              onPress={() => navigation.navigate('TransportScreen')}>
+              <Text style={styles.phoneButtonText}>🚍 Autres moyens de transport</Text>
+            </TouchableOpacity>
+
+            
 
             <TouchableOpacity onPress={() => setTransportModalVisible(false)} style={styles.closeButton}>
               <Text style={styles.closeText}>Fermer</Text>

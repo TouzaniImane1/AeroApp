@@ -31,18 +31,6 @@ export default function TransportScreen() {
         />
         <Text style={styles.label}>🚌 Réserver avec CTM</Text>
       </TouchableOpacity>
-
-      {/* Careem */}
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => Linking.openURL('https://www.careem.com')}
-      >
-        <Image
-          source={require('../assets/Taxi-icon.png')}
-          style={styles.icon}
-        />
-        <Text style={styles.label}>🚖 Réserver un taxi</Text>
-      </TouchableOpacity>
     </ScrollView>
   );
 }

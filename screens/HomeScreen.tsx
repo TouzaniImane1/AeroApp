@@ -1,13 +1,11 @@
-// screens/HomeScreen.tsx
-
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   ScrollView,
   View,
   Text,
   TouchableOpacity,
   Image,
-  Linking,
+  Linking
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -23,11 +21,28 @@ type NavigationProp = NativeStackNavigationProp<any>;
 export default function HomeScreen() {
   const navigation = useNavigation<NavigationProp>();
 
+  const scrollViewRef = useRef<ScrollView>(null);
+  const accessSectionY = useRef(0);
+
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#f7f8fa' }}>
+    <ScrollView
+      ref={scrollViewRef}
+      style={{ flex: 1, backgroundColor: '#f7f8fa' }}
+      onLayout={event => {
+        accessSectionY.current = event.nativeEvent.layout.y;
+      }}
+    >
       <HeaderTop />
       <ImageHeader />
-      <SearchAndQuickAccess />
+
+      {/* Accès rapide avec enregistrement de position Y */}
+      <View
+        onLayout={event => {
+          accessSectionY.current = event.nativeEvent.layout.y;
+        }}
+      >
+        <SearchAndQuickAccess />
+      </View>
 
       {/* Statut des Vols */}
       <View style={{ paddingHorizontal: 16 }}>
@@ -61,29 +76,45 @@ export default function HomeScreen() {
 
       {/* Plan de l’aéroport */}
       <View style={{ marginTop: 32, paddingHorizontal: 16 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 8
+          }}
+        >
           <Text style={{ fontSize: 16, color: '#111' }}>Plan de l’aéroport</Text>
           <TouchableOpacity onPress={() => navigation.navigate('MapScreen')}>
             <Text style={{ color: '#2563EB', fontSize: 14 }}>Explorer</Text>
           </TouchableOpacity>
         </View>
 
-        <View style={{
-          backgroundColor: '#fff',
-          borderRadius: 16,
-          overflow: 'hidden',
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.1,
-          shadowRadius: 8,
-          elevation: 6
-        }}>
+        <View
+          style={{
+            backgroundColor: '#fff',
+            borderRadius: 16,
+            overflow: 'hidden',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.1,
+            shadowRadius: 8,
+            elevation: 6
+          }}
+        >
           <Image
             source={require('../assets/plan_fes_saiss.png')}
             style={{ width: '100%', height: 180 }}
             resizeMode="cover"
           />
-          <View style={{ position: 'absolute', bottom: 12, left: 16, right: 16 }}>
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 12,
+              left: 16,
+              right: 16
+            }}
+          >
             <TouchableOpacity
               style={{
                 backgroundColor: '#ffffffee',
@@ -105,35 +136,65 @@ export default function HomeScreen() {
 
       {/* Services aéroportuaires */}
       <View style={{ marginTop: 30, paddingHorizontal: 16 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <Text style={{ fontSize: 16, color: '#111' }}>Services aéroportuaires</Text>
-          <TouchableOpacity>
-            <Text style={{ color: '#2563EB', fontSize: 14 }}>Tous les services</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 8
+          }}
+        >
+          <Text style={{ fontSize: 16, color: '#111' }}>Site Officiel</Text>
+          <TouchableOpacity
+            onPress={() => {
+              scrollViewRef.current?.scrollTo({
+                y: accessSectionY.current,
+                animated: true
+              });
+            }}
+          >
+            <Text style={{ color: '#2563EB', fontSize: 14 }}>
+              Tous les services
+            </Text>
           </TouchableOpacity>
         </View>
 
         {/* Bloc ONDA stylisé */}
-        <View style={{
-          backgroundColor: '#2563EB',
-          borderRadius: 16,
-          padding: 16,
-          marginBottom: 20
-        }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
-            <View style={{
-              backgroundColor: '#3B82F6',
-              borderRadius: 100,
-              padding: 10,
-              marginRight: 12
-            }}>
+        <View
+          style={{
+            backgroundColor: '#2563EB',
+            borderRadius: 16,
+            padding: 16,
+            marginBottom: 20
+          }}
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: 12
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: '#3B82F6',
+                borderRadius: 100,
+                padding: 10,
+                marginRight: 12
+              }}
+            >
               <Image
                 source={require('../assets/airplane-icon.png')}
                 style={{ width: 24, height: 24, tintColor: '#fff' }}
               />
             </View>
             <View>
-              <Text style={{ color: '#fff', fontSize: 16 }}>Réservation Officielle</Text>
-              <Text style={{ color: '#e0eaff', fontSize: 13 }}>Office National Des Aéroports</Text>
+              <Text style={{ color: '#fff', fontSize: 16 }}>
+                Réservation Officielle
+              </Text>
+              <Text style={{ color: '#e0eaff', fontSize: 13 }}>
+                Office National Des Aéroports
+              </Text>
             </View>
           </View>
           <TouchableOpacity
@@ -143,93 +204,16 @@ export default function HomeScreen() {
               paddingVertical: 10,
               alignItems: 'center'
             }}
-            onPress={() => Linking.openURL('https://www.onda.ma')}
+            onPress={() =>
+              Linking.openURL(
+                'https://www.onda.ma/Nos-A%C3%A9roports/A%C3%A9roport-F%C3%A8s-Sa%C3%AFss?fullbrowser'
+              )
+            }
           >
             <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>
               Accéder à la plateforme ONDA
             </Text>
           </TouchableOpacity>
-        </View>
-
-        {/* Cartes Hôtels & Transport premium */}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          {/* Hôtels */}
-          <View style={{
-            backgroundColor: '#fff',
-            borderRadius: 16,
-            padding: 16,
-            width: '48%',
-            alignItems: 'center',
-            shadowColor: '#000',
-            shadowOpacity: 0.06,
-            shadowOffset: { width: 0, height: 2 },
-            shadowRadius: 4,
-            elevation: 2
-          }}>
-            <View style={{
-              backgroundColor: '#FEF3C7',
-              borderRadius: 50,
-              padding: 12,
-              marginBottom: 8
-            }}>
-              <Image
-                source={require('../assets/hotel.png')}
-                style={{ width: 24, height: 24, tintColor: '#D97706' }}
-              />
-            </View>
-            <Text style={{ fontSize: 14, marginBottom: 10 }}>Hôtels à proximité</Text>
-            <TouchableOpacity
-              style={{
-                borderWidth: 1,
-                borderColor: '#e5e7eb',
-                borderRadius: 8,
-                paddingVertical: 6,
-                paddingHorizontal: 14
-              }}
-              onPress={() => navigation.navigate('HotelsScreen')}
-            >
-              <Text style={{ fontWeight: 'bold', fontSize: 14 }}>Réserver</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Transport */}
-          <View style={{
-            backgroundColor: '#fff',
-            borderRadius: 16,
-            padding: 16,
-            width: '48%',
-            alignItems: 'center',
-            shadowColor: '#000',
-            shadowOpacity: 0.06,
-            shadowOffset: { width: 0, height: 2 },
-            shadowRadius: 4,
-            elevation: 2
-          }}>
-            <View style={{
-              backgroundColor: '#ffff',
-              borderRadius: 50,
-              padding: 12,
-              marginBottom: 8
-            }}>
-              <Image
-                source={require('../assets/train-icon.jpg')}
-                style={{ width: 34, height: 24}}
-              />
-            </View>
-            <Text style={{ fontSize: 14, marginBottom: 10 }}>Transport</Text>
-            <TouchableOpacity
-              style={{
-                borderWidth: 1,
-                borderColor: '#e5e7eb',
-                borderRadius: 8,
-                paddingVertical: 6,
-                paddingHorizontal: 14
-              }}
-              onPress={() => navigation.navigate('TransportScreen')}
-            >
-              <Text style={{ fontWeight: 'bold', fontSize: 14 }}>Réserver</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </View>
     </ScrollView>
