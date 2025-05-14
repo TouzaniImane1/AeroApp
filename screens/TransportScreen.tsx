@@ -17,7 +17,7 @@ export default function TransportScreen() {
           source={require('../assets/train-icon.jpg')}
           style={styles.icon}
         />
-        <Text style={styles.label}>🚆 Réserver un billet ONCF</Text>
+        <Text style={styles.label}>Réserver un billet ONCF</Text>
       </TouchableOpacity>
 
       {/* CTM */}
@@ -29,7 +29,7 @@ export default function TransportScreen() {
           source={require('../assets/bus-icon.jpg')}
           style={styles.icon}
         />
-        <Text style={styles.label}>🚌 Réserver avec CTM</Text>
+        <Text style={styles.label}>Réserver avec CTM</Text>
       </TouchableOpacity>
     </ScrollView>
   );
