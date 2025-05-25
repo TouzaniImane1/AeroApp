@@ -9,7 +9,7 @@ const FlightSummary = () => {
 
   useEffect(() => {
     //axios.get('http://10.1.6.247:3000/flights/short') // mets ton IP
-    axios.get('http://192.168.100.68:3000/flights/short') // mets ton IP
+    axios.get('http://192.168.11.106:3000/flights/short') // mets ton IP
 
       .then(response => {
         

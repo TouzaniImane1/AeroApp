@@ -4,7 +4,6 @@ import { View, Button, Alert } from 'react-native';
 import { getAuth, signInWithCredential, GoogleAuthProvider } from 'firebase/auth';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { auth } from '../src/config/firebase'; // ton fichier firebase.js
 
 WebBrowser.maybeCompleteAuthSession();
 
