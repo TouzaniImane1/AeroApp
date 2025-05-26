@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,47 +9,39 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  Image
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../src/types/navigation';
-import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
-
-WebBrowser.maybeCompleteAuthSession();
+import { useAuth } from '../contexts/AuthContext'; // ✅ import du contexte
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'LoginScreen'>;
 
 export default function LoginScreen() {
   const navigation = useNavigation<NavigationProp>();
+  const { login } = useAuth(); // ✅ utiliser login() pour activer la session
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: '1234567890-abcdef.apps.googleusercontent.com', // Remplace avec ton vrai ID client Google
-  });
+  const loginUser = async () => {
+    try {
+      const response = await fetch('http://192.168.11.106:3001/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-  useEffect(() => {
-    if (response?.type === 'success') {
-      const { authentication } = response;
-      console.log('✅ Jeton Google :', authentication?.accessToken);
-      navigation.replace('HomeScreen');
-    }
-  }, [response]);
-
-  const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert('Erreur', 'Veuillez remplir tous les champs.');
-      return;
-    }
-
-    if (email === 'test@aero.com' && password === '123456') {
-      Alert.alert('Connexion réussie');
-      navigation.replace('HomeScreen');
-    } else {
-      Alert.alert('Échec', 'Email ou mot de passe incorrect.');
+      const data = await response.json();
+      if (response.ok) {
+        Alert.alert(data.message);
+        login(); // ✅ déclenche le rendu de HomeScreen via le contexte
+      } else {
+        Alert.alert(data.message || 'Erreur');
+      }
+    } catch (err) {
+      Alert.alert('Erreur de connexion au serveur');
     }
   };
 
@@ -76,14 +68,14 @@ export default function LoginScreen() {
           onChangeText={setPassword}
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <TouchableOpacity style={styles.button} onPress={loginUser}>
           <Text style={styles.buttonText}>Se connecter</Text>
           <Ionicons name="arrow-forward" size={20} color="#fff" style={{ marginLeft: 6 }} />
         </TouchableOpacity>
 
         <Text style={styles.or}>— ou —</Text>
 
-        <TouchableOpacity style={styles.googleButton} disabled={!request} onPress={() => promptAsync()}>
+        <TouchableOpacity style={styles.googleButton}>
           <Image
             source={require('../assets/google-icon.jpg')}
             style={styles.googleIcon}

@@ -31,8 +31,8 @@ export default function AuthFormScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-      clientId: '1234567890-abcdef.apps.googleusercontent.com', // ⚠️ Remplace ici par ton vrai clientId
-    });
+    clientId: '1234567890-abcdef.apps.googleusercontent.com', // ⚠️ Remplace ici par ton vrai clientId
+  });
 
   useEffect(() => {
     if (response?.type === 'success') {
@@ -42,7 +42,7 @@ export default function AuthFormScreen() {
     }
   }, [response]);
 
-  const handleRegister = () => {
+  const registerUser = async () => {
     if (!name || !email || !password || !confirmPassword) {
       Alert.alert('Erreur', 'Veuillez remplir tous les champs.');
       return;
@@ -51,8 +51,27 @@ export default function AuthFormScreen() {
       Alert.alert('Erreur', 'Les mots de passe ne correspondent pas.');
       return;
     }
-    Alert.alert('Succès', 'Inscription réussie !');
-    navigation.replace('HomeScreen');
+    try {
+      const response = await fetch('http://192.168.11.106:3001/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        Alert.alert('Succès', data.message);
+        navigation.replace('LoginScreen');
+      } else {
+        Alert.alert('Erreur', data.message || 'Erreur lors de l’inscription');
+      }
+    } catch (err) {
+      Alert.alert('Erreur', 'Connexion au serveur impossible');
+    }
   };
 
   return (
@@ -92,7 +111,7 @@ export default function AuthFormScreen() {
           onChangeText={setConfirmPassword}
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <TouchableOpacity style={styles.button} onPress={registerUser}>
           <Text style={styles.buttonText}>Créer un compte →</Text>
         </TouchableOpacity>
 

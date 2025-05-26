@@ -15,6 +15,7 @@ import ImageHeader from '../components/ImageHeader';
 import SearchAndQuickAccess from '../components/SearchAndQuickAccess';
 import FlightSummary from '../components/FlightSummary';
 import AirportServices from '../components/AirportServices';
+import { useAuth } from '../contexts/AuthContext'; // ou le bon chemin
 
 type NavigationProp = NativeStackNavigationProp<any>;
 

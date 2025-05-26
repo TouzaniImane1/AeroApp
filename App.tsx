@@ -12,7 +12,7 @@ import ShoppingScreen from './screens/ShoppingScreen';
 import TransportScreen from './screens/TransportScreen';
 import AuthFormScreen from './screens/AuthFormScreen';
 import LoginScreen from './screens/LoginScreen';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext'; // ✅ Corrigé
 import { RootStackParamList } from './src/types/navigation';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
