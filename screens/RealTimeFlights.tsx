@@ -1,4 +1,3 @@
-// screens/RealTimeFlights.tsx 
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -6,8 +5,11 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRoute, RouteProp } from '@react-navigation/native';
 
 type RouteParams = {
@@ -17,13 +19,12 @@ type RouteParams = {
 const RealTimeFlights = () => {
   const [flights, setFlights] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [saved, setSaved] = useState<string[]>([]);
 
   const route = useRoute<RouteProp<Record<string, RouteParams>, string>>();
   const searchQuery = route?.params?.query?.toLowerCase() || '';
 
   useEffect(() => {
-    /*axios
-      .get('http://10.1.6.247:3000/flights/full')*/
     axios
       .get('http://192.168.11.103:3000/flights/full')
       .then((response) => {
@@ -31,14 +32,30 @@ const RealTimeFlights = () => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+
+    AsyncStorage.getItem('savedFlights').then(data => {
+      if (data) setSaved(JSON.parse(data).map((f: any) => f.number));
+    });
   }, []);
 
-  // Applique un filtre si une recherche a été saisie
+  const toggleSave = async (flightNumber: string, flight: any) => {
+    const savedFlights = await AsyncStorage.getItem('savedFlights');
+    let list = savedFlights ? JSON.parse(savedFlights) : [];
+
+    if (list.find((f: any) => f.number === flightNumber)) {
+      list = list.filter((f: any) => f.number !== flightNumber);
+    } else {
+      list.push(flight);
+    }
+
+    await AsyncStorage.setItem('savedFlights', JSON.stringify(list));
+    setSaved(list.map((f: any) => f.number));
+  };
+
   const filteredFlights = flights.filter((flight) =>
     flight.number?.toLowerCase().includes(searchQuery) ||
-    flight.to?.toLowerCase().includes(searchQuery) // uniquement la destination
+    flight.to?.toLowerCase().includes(searchQuery)
   );
-  
 
   return (
     <ScrollView style={styles.container}>
@@ -51,10 +68,7 @@ const RealTimeFlights = () => {
             <View style={styles.row}>
               <Text style={styles.number}>{flight.number}</Text>
               <Text
-                style={[
-                  styles.status,
-                  { color: flight.color || '#007bff' },
-                ]}
+                style={[styles.status, { color: flight.color || '#007bff' }]}
               >
                 {flight.status}
               </Text>
@@ -65,6 +79,20 @@ const RealTimeFlights = () => {
             <Text style={styles.detail}>⏳ Durée : {flight.duration}</Text>
             <Text style={styles.detail}>💶 Prix estimé : {flight.price}</Text>
             <Text style={styles.detail}>🛫 Terminal : {flight.terminal} | Porte : {flight.gate}</Text>
+
+            <TouchableOpacity
+              onPress={() => toggleSave(flight.number, flight)}
+              style={styles.saveIcon}
+            >
+              <Image
+                source={require('../assets/enregistrer-instagram.png')}
+                style={{
+                  width: 24,
+                  height: 24,
+                  tintColor: saved.includes(flight.number) ? '#facc15' : '#ccc',
+                }}
+              />
+            </TouchableOpacity>
           </View>
         ))
       )}
@@ -85,6 +113,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOffset: { width: 0, height: 3 },
     elevation: 3,
+    position: 'relative',
   },
   row: {
     flexDirection: 'row',
@@ -96,6 +125,11 @@ const styles = StyleSheet.create({
   airline: { fontSize: 14, color: '#666' },
   route: { fontSize: 15, marginVertical: 4 },
   detail: { fontSize: 13, color: '#444', marginVertical: 1 },
+  saveIcon: {
+    position: 'absolute',
+    right: 10,
+    bottom: 10,
+  },
 });
 
 export default RealTimeFlights;

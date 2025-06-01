@@ -16,6 +16,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { RootStackParamList } from './src/types/navigation';
 import ParkingScreen from './screens/ParkingScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import MesVolsScreen from './screens/MesVolsScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -36,6 +37,8 @@ function AppNavigator() {
           <Stack.Screen name="RealTimeFlights" component={RealTimeFlights} />
           <Stack.Screen name="ParkingScreen" component={ParkingScreen} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+          <Stack.Screen name="MesVols" component={MesVolsScreen} />
+
         </>
       ) : (
         // ✅ Unauthenticated user routes

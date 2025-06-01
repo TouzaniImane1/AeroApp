@@ -49,6 +49,9 @@ export default function SearchAndQuickAccess() {
 
   const handleQuickAccess = (label: string) => {
     switch (label) {
+      case 'Mes Vols':
+        navigation.navigate('MesVols');
+        break;
       case 'Hôtels':
         navigation.navigate('HotelsScreen');
         break;
@@ -173,7 +176,6 @@ export default function SearchAndQuickAccess() {
         </View>
       </Modal>
 
-      {/* Modal Parking */}
        {/* Modal Parking */}
       <Modal
         visible={parkingModalVisible}
