@@ -1,19 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground, ActivityIndicator, StyleSheet } from 'react-native';
-import * as Location from 'expo-location';
+import {
+  View,
+  Text,
+  ImageBackground,
+  ActivityIndicator,
+  StyleSheet,
+  Dimensions,
+  FlatList,
+  Image,
+} from 'react-native';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
-import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
-import background from '../assets/fes-background.webp'; // adapte le nom
-
+import { Ionicons } from '@expo/vector-icons';
 
 dayjs.locale('fr');
 
+type ForecastItem = {
+  dt_txt: string;
+  main: {
+    temp: number;
+  };
+  weather: {
+    icon: string;
+    description: string;
+  }[];
+};
+
+const headerImages = [
+  require('../assets/aéro1.avif'),
+  require('../assets/aéro2.jpg'),
+  require('../assets/aéro3.jpg'),
+  require('../assets/aéro4.jpg'),
+  require('../assets/fes-background.webp'),
+];
+
 export default function ImageHeader() {
   const [currentTime, setCurrentTime] = useState(dayjs());
-  const [weather, setWeather] = useState<any>(null);
+  const [forecast, setForecast] = useState<ForecastItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [imageIndex, setImageIndex] = useState(0);
 
+  // ⏰ Heure en temps réel
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(dayjs());
@@ -21,65 +48,79 @@ export default function ImageHeader() {
     return () => clearInterval(interval);
   }, []);
 
+  // 🌤️ Prévisions météo 5 jours (midi)
   useEffect(() => {
     (async () => {
       try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') return;
-        const location = await Location.getCurrentPositionAsync({});
-        const apiKey = 'a4b1e991c1f24869e155f96b2d9b5b11';
-        const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&lang=fr&appid=${apiKey}`
+        const apiKey = '537cddc5d0373c739cfed462ab45264a';
+        const res = await fetch(
+          `https://api.openweathermap.org/data/2.5/forecast?q=Fès,MA&units=metric&lang=fr&appid=${apiKey}`
         );
-        const data = await response.json();
-        if (data && typeof data.main?.temp === 'number') {
-          setWeather(data);
-        }
-        setLoading(false);
-      } catch (err) {
-        console.error("Erreur lors de la récupération de la météo :", err);
+        const data = await res.json();
+        const filtered = data.list
+          .filter((item: ForecastItem) => item.dt_txt.includes('12:00:00'))
+          .slice(0, 5);
+        setForecast(filtered);
+      } catch (error) {
+        console.error('Erreur météo prévisionnelle :', error);
+      } finally {
         setLoading(false);
       }
     })();
   }, []);
 
+  // 🖼️ Changement automatique de l’image de fond
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setImageIndex((prev) => (prev + 1) % headerImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <ImageBackground source={background} style={styles.image} imageStyle={styles.imageStyle}>
+    <ImageBackground
+      source={headerImages[imageIndex]}
+      style={styles.image}
+      imageStyle={styles.imageStyle}
+    >
       <View style={styles.overlay}>
         <Text style={styles.timeText}>
-          <Ionicons name="location-sharp" size={12} color="#00FFA3" /> {currentTime.format('HH:mm')}   –   {currentTime.format('dddd D MMM YYYY')}
+          <Ionicons name="location-sharp" size={12} color="#00FFA3" />{' '}
+          {currentTime.format('HH:mm')} – {currentTime.format('dddd D MMM YYYY')}
         </Text>
 
-        <Text style={styles.welcomeText}>Bienvenue à{'\n'}L'Aéroport Fès–Saïss</Text>
+        <Text style={styles.welcomeText}>
+          Bienvenue à{'\n'}L'Aéroport Fès–Saïss
+        </Text>
         <Text style={styles.subText}>Votre passerelle vers le monde</Text>
 
-        <View style={styles.infoContainer}>
-          <View style={styles.infoBox}>
-            <Ionicons name="airplane" size={20} color="#00FFA3" />
-            <Text style={styles.infoValue}>127</Text>
-            <Text style={styles.infoLabel}>Vols aujourd'hui</Text>
-          </View>
-          <View style={styles.infoBox}>
-            <MaterialCommunityIcons name="thermometer" size={20} color="#60A5FA" />
-            {loading ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <>
-                <Text style={styles.infoValue}>
-                  {typeof weather?.main?.temp === 'number' ? `${Math.round(weather.main.temp)}°C` : 'N/A'}
+        {loading ? (
+          <ActivityIndicator size="small" color="#fff" style={{ marginTop: 10 }} />
+        ) : (
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.weatherList}
+            data={forecast}
+            keyExtractor={(item) => item.dt_txt}
+            renderItem={({ item }) => (
+              <View style={styles.weatherItem}>
+                <Text style={styles.dayText}>{dayjs(item.dt_txt).format('ddd')}</Text>
+                {item.weather?.[0]?.icon ? (
+                  <Image
+                    source={{
+                      uri: `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`,
+                    }}
+                    style={styles.icon}
+                  />
+                ) : null}
+                <Text style={styles.tempText}>
+                  {Math.round(item.main.temp)}°C
                 </Text>
-                <Text style={styles.infoLabel}>
-                  {weather?.weather?.[0]?.description ?? 'Ensoleillé'}
-                </Text>
-              </>
+              </View>
             )}
-          </View>
-          <View style={styles.infoBox}>
-            <FontAwesome5 name="user-friends" size={20} color="#C084FC" />
-            <Text style={styles.infoValue}>12k</Text>
-            <Text style={styles.infoLabel}>Passagers</Text>
-          </View>
-        </View>
+          />
+        )}
       </View>
     </ImageBackground>
   );
@@ -87,7 +128,7 @@ export default function ImageHeader() {
 
 const styles = StyleSheet.create({
   image: {
-    height: 360,
+    height: Dimensions.get('window').height * 0.36,
     justifyContent: 'flex-end',
   },
   imageStyle: {
@@ -103,41 +144,42 @@ const styles = StyleSheet.create({
   timeText: {
     color: '#00FFA3',
     fontSize: 12,
-    marginBottom: 4,
     fontWeight: '500',
+    marginBottom: 6,
   },
   welcomeText: {
     color: '#fff',
     fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   subText: {
     color: '#fff',
     fontSize: 13,
-    marginBottom: 16,
+    marginBottom: 12,
   },
-  infoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderRadius: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+  weatherList: {
+    gap: 14,
+    marginTop: 10,
   },
-  infoBox: {
+  weatherItem: {
     alignItems: 'center',
-    flex: 1,
+    paddingHorizontal: 10,
   },
-  infoValue: {
+  dayText: {
     color: '#fff',
-    fontSize: 18,
-    fontWeight: '700',
-    marginTop: 6,
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
   },
-  infoLabel: {
+  icon: {
+    width: 40,
+    height: 40,
+  },
+  tempText: {
     color: '#fff',
-    fontSize: 11,
+    fontSize: 16,
+    fontWeight: '600',
     marginTop: 2,
   },
 });

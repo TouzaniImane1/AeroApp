@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import UserIcon from '../assets/utilisateur.png'; // ✅ Ton icône utilisateur
 const logo = require('../assets/logo.webp');
+const reclamation = require('../assets/réclamation.png');
 
 export default function HeaderTop() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -26,12 +27,12 @@ export default function HeaderTop() {
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Image
           source={logo}
-          style={{ width: 20, height: 20, marginRight: 8 }}
+          style={{ width: 50, height: 40, marginRight: 8 }}
           resizeMode="contain"
         />
         <View>
-          <Text style={{ fontSize: 14, color: '#4052EF', fontWeight: 'bold' }}>Fès–Saïss</Text>
-          <Text style={{ fontSize: 11, color: 'green' }}>● Opérationnel</Text>
+          <Text style={{ fontSize: 20, color: '#4052EF', fontWeight: 'bold' }}>Fès–Saïss</Text>
+          <Text style={{ fontSize: 15, color: 'green' }}>● Opérationnel</Text>
         </View>
       </View>
 
@@ -39,24 +40,17 @@ export default function HeaderTop() {
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         {/* 🔔 Cloche de notification */}
         <View style={{ position: 'relative', marginRight: 12 }}>
-          <TouchableOpacity style={{ backgroundColor: '#F0F0F0', borderRadius: 8, padding: 6 }}>
-            <Ionicons name="notifications-outline" size={16} color="#333" />
-          </TouchableOpacity>
-          <View
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: 4,
-              backgroundColor: 'red',
-              position: 'absolute',
-              top: 4,
-              right: 4,
-            }}
-          />
+          <TouchableOpacity>
+          <Image
+          source={reclamation}
+          style={{ width: 22, height: 22, marginRight: 8 }}
+          resizeMode="contain"
+          />          
+        </TouchableOpacity>
         </View>
 
         {/* 👤 Icône utilisateur cliquable */}
-        <TouchableOpacity onPress={() => navigation.navigate('AuthScreen')}>
+        <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen' as never)}>
           <Image
             source={UserIcon}
             style={{ width: 22, height: 22, borderRadius: 16 }}

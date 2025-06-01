@@ -9,39 +9,54 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  Image,
+  Image
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../src/types/navigation';
-import { useAuth } from '../contexts/AuthContext'; // ✅ import du contexte
+import { useAuth } from '../contexts/AuthContext';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'LoginScreen'>;
 
 export default function LoginScreen() {
   const navigation = useNavigation<NavigationProp>();
-  const { login } = useAuth(); // ✅ utiliser login() pour activer la session
+  const { login } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const loginUser = async () => {
     try {
-      const response = await fetch('http://192.168.11.106:3001/api/login', {
+      const response = await fetch('http://192.168.11.103:3001/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
+      console.log('API Response:', data); // ✅ Pour debug
+
       if (response.ok) {
-        Alert.alert(data.message);
-        login(); // ✅ déclenche le rendu de HomeScreen via le contexte
+        Alert.alert('Connexion réussie', data.message || 'Bienvenue !');
+
+        const userData = data.user || data;
+
+        // ✅ Stocke les infos dans le contexte
+        login({
+          name: data.user?.name || 'Utilisateur',
+          email: data.user?.email || email,
+          photoUrl: data.user?.photoUrl || null
+        });
+
+
+        navigation.replace('HomeScreen');
       } else {
-        Alert.alert(data.message || 'Erreur');
+        Alert.alert('Erreur', data.message || 'Email ou mot de passe incorrect.');
       }
     } catch (err) {
-      Alert.alert('Erreur de connexion au serveur');
+      console.error(err);
+      Alert.alert('Erreur réseau', 'Impossible de contacter le serveur.');
     }
   };
 

@@ -5,7 +5,8 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  Linking
+  Linking,
+  Dimensions
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -15,18 +16,19 @@ import ImageHeader from '../components/ImageHeader';
 import SearchAndQuickAccess from '../components/SearchAndQuickAccess';
 import FlightSummary from '../components/FlightSummary';
 import AirportServices from '../components/AirportServices';
-import { useAuth } from '../contexts/AuthContext'; // ou le bon chemin
+import { useAuth } from '../contexts/AuthContext'; // ✅ contexte utilisateur
 
-type NavigationProp = NativeStackNavigationProp<any>;
+import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
-  const navigation = useNavigation<NavigationProp>();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const { user } = useAuth(); // ✅ accès aux infos utilisateur
 
   const scrollViewRef = useRef<ScrollView>(null);
   const accessSectionY = useRef(0);
 
   return (
-    <ScrollView
+   <ScrollView
       ref={scrollViewRef}
       style={{ flex: 1, backgroundColor: '#f7f8fa' }}
       onLayout={event => {
@@ -35,8 +37,8 @@ export default function HomeScreen() {
     >
       <HeaderTop />
       <ImageHeader />
+      
 
-      {/* Accès rapide avec enregistrement de position Y */}
       <View
         onLayout={event => {
           accessSectionY.current = event.nativeEvent.layout.y;
@@ -45,7 +47,6 @@ export default function HomeScreen() {
         <SearchAndQuickAccess />
       </View>
 
-      {/* Statut des Vols */}
       <View style={{ paddingHorizontal: 16 }}>
         <Text style={{ fontSize: 16, color: '#111', marginVertical: 10 }}>
           Statut des Vols
@@ -53,7 +54,6 @@ export default function HomeScreen() {
         <FlightSummary />
       </View>
 
-      {/* Bouton Vols en direct */}
       <TouchableOpacity
         style={{
           backgroundColor: '#007bff',
@@ -75,7 +75,6 @@ export default function HomeScreen() {
         </Text>
       </TouchableOpacity>
 
-      {/* Plan de l’aéroport */}
       <View style={{ marginTop: 32, paddingHorizontal: 16 }}>
         <View
           style={{
@@ -135,7 +134,6 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Services aéroportuaires */}
       <View style={{ marginTop: 30, paddingHorizontal: 16 }}>
         <View
           style={{
@@ -160,7 +158,6 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Bloc ONDA stylisé */}
         <View
           style={{
             backgroundColor: '#2563EB',

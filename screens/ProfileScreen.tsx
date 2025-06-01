@@ -1,100 +1,118 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   Image,
-  Button,
   StyleSheet,
   TouchableOpacity,
   Alert,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { auth } from '../src/config/firebase';
-// @ts-ignore
-import { signOut } from 'firebase/auth';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useAuth } from '../contexts/AuthContext';
 import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../src/types/navigation';
 
 export default function ProfileScreen() {
-  const user = auth.currentUser;
-  const navigation = useNavigation();
+  const { user, logout, updatePhotoUrl } = useAuth();
+  type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+  const navigation = useNavigation<NavigationProp>();
 
-  const [imageUri, setImageUri] = useState<string | null>(null);
+  const pickImage = async () => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert("Permission refusée", "Autorisez l'accès à la galerie.");
+      return;
+    }
 
-  const handlePickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [1, 1],
     });
 
     if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
+      const uri = result.assets[0].uri;
+      updatePhotoUrl(uri); // Enregistre dans le contexte + AsyncStorage
     }
   };
 
   const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        navigation.navigate('AuthScreen' as never);
-      })
-      .catch((error: any) => Alert.alert('Erreur', error.message));
-    };
+    Alert.alert(
+      "Confirmation",
+      "Voulez-vous vraiment vous déconnecter ?",
+      [
+        { text: "Annuler", style: "cancel" },
+        {
+          text: "Oui",
+          style: "destructive",
+          onPress: () => {
+            logout();
+            navigation.replace('AuthScreen');
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Mon Profil</Text>
-
-      <TouchableOpacity onPress={handlePickImage}>
+      <TouchableOpacity onPress={pickImage}>
         <Image
           source={
-            imageUri
-              ? { uri: imageUri }
-              : require('../assets/default-avatar.jpg') // à remplacer si tu veux une image par défaut
+            user?.photoUrl
+              ? { uri: user.photoUrl }
+              : require('../assets/default-avatar.jpg')
           }
-          style={styles.avatar}
+          style={styles.profileImage}
         />
-        <Text style={styles.changePhoto}>Changer la photo</Text>
       </TouchableOpacity>
 
-      <Text style={styles.email}>
-        {user?.email || 'Utilisateur non identifié'}
-      </Text>
+      <Text style={styles.name}>{user?.name || 'Utilisateur'}</Text>
+      <Text style={styles.email}>{user?.email}</Text>
 
-      <Button title="Se déconnecter" onPress={handleLogout} />
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.logoutText}>Se déconnecter</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#f9f9f9',
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
-    backgroundColor: '#f9fcff',
+    alignItems: 'center',
+    padding: 20,
   },
-  title: {
-    fontSize: 26,
-    fontWeight: '600',
-    marginBottom: 30,
-    color: '#1d3c78',
-  },
-  avatar: {
+  profileImage: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    borderWidth: 2,
-    borderColor: '#1a73e8',
-    marginBottom: 10,
-  },
-  changePhoto: {
-    color: '#1a73e8',
-    fontSize: 14,
+    backgroundColor: '#ccc',
     marginBottom: 20,
   },
+  name: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1e3a8a',
+    marginBottom: 4,
+  },
   email: {
-    fontSize: 16,
-    marginBottom: 40,
-    color: '#333',
+    fontSize: 14,
+    color: '#6b7280',
+    marginBottom: 20,
+  },
+  logoutButton: {
+    backgroundColor: '#f87171',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 25,
+  },
+  logoutText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });

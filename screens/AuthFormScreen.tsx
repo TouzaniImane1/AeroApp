@@ -31,7 +31,7 @@ export default function AuthFormScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: '1234567890-abcdef.apps.googleusercontent.com', // ⚠️ Remplace ici par ton vrai clientId
+    clientId: '883380655979-23qa2vgjoqkfnqtirfv7o2lokkb4qh1i.apps.googleusercontent.com', // ⚠️ Remplace ici par ton vrai clientId
   });
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export default function AuthFormScreen() {
       return;
     }
     try {
-      const response = await fetch('http://192.168.11.106:3001/api/register', {
+      const response = await fetch('http://192.168.11.103:3001/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

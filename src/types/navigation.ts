@@ -10,4 +10,7 @@ export type RootStackParamList = {
   RestaurantsScreen: undefined;
   FlightsScreen: undefined;
   RealTimeFlights: undefined;
+  ParkingScreen: undefined;
+  ProfileScreen: undefined; // ✅ ici aussi
+
 };

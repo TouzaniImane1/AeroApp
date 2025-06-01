@@ -22,7 +22,7 @@ export default function AuthScreen() {
   const navigation = useNavigation<NavigationProp>();
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: '1234567890-abcdef.apps.googleusercontent.com', // ⚠️ Remplace ici par ton vrai clientId
+    clientId: '883380655979-23qa2vgjoqkfnqtirfv7o2lokkb4qh1i.apps.googleusercontent.com', // ⚠️ Remplace ici par ton vrai clientId
   });
 
   useEffect(() => {

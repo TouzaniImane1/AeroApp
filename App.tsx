@@ -12,8 +12,10 @@ import ShoppingScreen from './screens/ShoppingScreen';
 import TransportScreen from './screens/TransportScreen';
 import AuthFormScreen from './screens/AuthFormScreen';
 import LoginScreen from './screens/LoginScreen';
-import { AuthProvider, useAuth } from './contexts/AuthContext'; // ✅ Corrigé
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { RootStackParamList } from './src/types/navigation';
+import ParkingScreen from './screens/ParkingScreen';
+import ProfileScreen from './screens/ProfileScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -22,14 +24,8 @@ function AppNavigator() {
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {!isAuthenticated ? (
-        <>
-          <Stack.Screen name="AuthScreen" component={AuthScreen} />
-          <Stack.Screen name="LoginScreen" component={LoginScreen} />
-          <Stack.Screen name="AuthFormScreen" component={AuthFormScreen} />
-          <Stack.Screen name="AuthGoogleScreen" component={AuthGoogleScreen} />
-        </>
-      ) : (
+      {isAuthenticated ? (
+        // ✅ Authenticated user routes
         <>
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
           <Stack.Screen name="HotelsScreen" component={HotelsScreen} />
@@ -38,6 +34,16 @@ function AppNavigator() {
           <Stack.Screen name="RestaurantsScreen" component={RestaurantsScreen} />
           <Stack.Screen name="FlightsScreen" component={FlightsScreen} />
           <Stack.Screen name="RealTimeFlights" component={RealTimeFlights} />
+          <Stack.Screen name="ParkingScreen" component={ParkingScreen} />
+          <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+        </>
+      ) : (
+        // ✅ Unauthenticated user routes
+        <>
+          <Stack.Screen name="AuthScreen" component={AuthScreen} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} />
+          <Stack.Screen name="AuthFormScreen" component={AuthFormScreen} />
+          <Stack.Screen name="AuthGoogleScreen" component={AuthGoogleScreen} />
         </>
       )}
     </Stack.Navigator>
