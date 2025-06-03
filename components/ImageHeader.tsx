@@ -73,7 +73,7 @@ export default function ImageHeader() {
   useEffect(() => {
     const interval = setInterval(() => {
       setImageIndex((prev) => (prev + 1) % headerImages.length);
-    }, 4000);
+    }, 2000);
     return () => clearInterval(interval);
   }, []);
 
