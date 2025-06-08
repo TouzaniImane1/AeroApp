@@ -1,4 +1,5 @@
-import React, { useState } from 'react'; 
+// screens/SearchAndQuickAccess.tsx
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,11 +9,13 @@ import {
   Image,
   Modal,
   ScrollView,
-  Linking
+  Linking,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useAuth } from '../contexts/AuthContext';
 
+// Import des icônes (assure-toi que les chemins sont corrects)
 import AirplaneIcon from '../assets/airplane-icon.png';
 import TaxiIcon from '../assets/train-icon.png';
 import ParkingIcon from '../assets/parking-icon.jpg';
@@ -40,6 +43,9 @@ export default function SearchAndQuickAccess() {
   const [transportModalVisible, setTransportModalVisible] = useState(false);
   const [parkingModalVisible, setParkingModalVisible] = useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
+  const [infoModalVisible, setInfoModalVisible] = useState(false);
 
   const handleSearch = () => {
     if (search.trim() !== '') {
@@ -56,16 +62,27 @@ export default function SearchAndQuickAccess() {
         navigation.navigate('HotelsScreen');
         break;
       case 'Restaurants':
-        navigation.navigate('RestaurantsScreen');
+        if (isAdmin) {
+          navigation.navigate('AdminRestaurantsScreen');
+        } else {
+          navigation.navigate('RestaurantsScreen');
+        }
         break;
       case 'Shopping':
-        navigation.navigate('ShoppingScreen');
+        if (isAdmin) {
+          navigation.navigate('AdminShoppingScreen');
+        } else {
+          navigation.navigate('ShoppingScreen');
+        }
         break;
       case 'Transport':
         setTransportModalVisible(true);
         break;
       case 'Parking':
         setParkingModalVisible(true);
+        break;
+      case 'Infos':
+        setInfoModalVisible(true);
         break;
       default:
         console.log('Accès rapide cliqué :', label);
@@ -105,7 +122,9 @@ export default function SearchAndQuickAccess() {
             onPress={() => handleQuickAccess(item.label)}
           >
             <Image source={item.icon} style={styles.iconImage} />
-            <Text style={[styles.iconLabel, activeIndex === index && styles.activeLabel]}>{item.label}</Text>
+            <Text style={[styles.iconLabel, activeIndex === index && styles.activeLabel]}>
+              {item.label}
+            </Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -121,28 +140,28 @@ export default function SearchAndQuickAccess() {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>🚕 Tarifs des Taxis depuis l’Aéroport</Text>
             <ScrollView style={{ maxHeight: 300 }}>
-               {[
-                ["Volubilis - My. Idriss - Meknès", "800 DH"],
-                ["Moyen Atlas", "800 DH"],
-                ["Fès", "120 DH"],
-                ["Volubilis - My. Idriss", "500 DH"],
-                ["Meknès", "400 DH"],
-                ["Bhalil - Sefrou", "400 DH"],
-                ["My Yacoub", "300 DH"],
-                ["Sidi Harazem", "300 DH"],
-                ["Rabat", "1300 DH"],
-                ["Casablanca", "1200 DH"],
-                ["Aéroport Med V", "1200 DH"],
-                ["Tanger", "1200 DH"],
-                ["Aéroport Tanger", "800 DH"],
-                ["Chaouen", "1200 DH"],
-                ["Tétouan", "1200 DH"],
-                ["Al Hoceima", "1300 DH"],
-                ["Oujda", "1300 DH"],
-                ["Nador", "1300 DH"],
-                ["Taza", "500 DH"],
-                ["Marrakech", "2000 DH"],
-                ["Ifrane", "300 DH"]
+              {[
+                ['Volubilis - My. Idriss - Meknès', '800 DH'],
+                ['Moyen Atlas', '800 DH'],
+                ['Fès', '120 DH'],
+                ['Volubilis - My. Idriss', '500 DH'],
+                ['Meknès', '400 DH'],
+                ['Bhalil - Sefrou', '400 DH'],
+                ['My Yacoub', '300 DH'],
+                ['Sidi Harazem', '300 DH'],
+                ['Rabat', '1300 DH'],
+                ['Casablanca', '1200 DH'],
+                ['Aéroport Med V', '1200 DH'],
+                ['Tanger', '1200 DH'],
+                ['Aéroport Tanger', '800 DH'],
+                ['Chaouen', '1200 DH'],
+                ['Tétouan', '1200 DH'],
+                ['Al Hoceima', '1300 DH'],
+                ['Oujda', '1300 DH'],
+                ['Nador', '1300 DH'],
+                ['Taza', '500 DH'],
+                ['Marrakech', '2000 DH'],
+                ['Ifrane', '300 DH'],
               ].map(([dest, price], i) => (
                 <View key={i} style={styles.tarifRow}>
                   <Text style={styles.tarifDestination}>{dest}</Text>
@@ -150,33 +169,61 @@ export default function SearchAndQuickAccess() {
                 </View>
               ))}
             </ScrollView>
+
             <View style={styles.separator} />
 
             <Text style={styles.sectionTitle}>☎️ Numéros utiles</Text>
-            <TouchableOpacity style={styles.phoneButton} onPress={() => Linking.openURL('tel:05 35 62 26 59')}>
-              <Text style={styles.phoneButtonText}> Wilaya de Fes-Meknes : 05 35 62 26 59</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.phoneButton} onPress={() => Linking.openURL('tel:0535624808')}>
-              <Text style={styles.phoneButtonText}> Aéroport Fès–Saïss : 05 35 62 48 08</Text>
-            </TouchableOpacity>
-            <Text style={styles.sectionTitle}>🚆 Autre Options</Text>
-
             <TouchableOpacity
               style={styles.phoneButton}
-              onPress={() => navigation.navigate('TransportScreen')}>
+              onPress={() => Linking.openURL('tel:05 35 62 26 59')}
+            >
+              <Text style={styles.phoneButtonText}> Wilaya de Fes-Meknes : 05 35 62 26 59</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.phoneButton}
+              onPress={() => Linking.openURL('tel:0535624808')}
+            >
+              <Text style={styles.phoneButtonText}> Aéroport Fès–Saïss : 05 35 62 48 08</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.sectionTitle}>🚆 Autre Options</Text>
+            <TouchableOpacity
+              style={styles.phoneButton}
+              onPress={() => navigation.navigate('TransportScreen')}
+            >
               <Text style={styles.phoneButtonText}>🚍 Autres moyens de transport</Text>
             </TouchableOpacity>
 
-            
-
-            <TouchableOpacity onPress={() => setTransportModalVisible(false)} style={styles.closeButton}>
+            <TouchableOpacity
+              onPress={() => setTransportModalVisible(false)}
+              style={styles.closeButton}
+            >
               <Text style={styles.closeText}>Fermer</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-       {/* Modal Parking */}
+       {/* ✅ Modal Infos */}
+      <Modal visible={infoModalVisible} animationType="fade" transparent onRequestClose={() => setInfoModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>ℹ️ Informations sur l’Aéroport Fès–Saïss</Text>
+            <ScrollView style={styles.infoContent}>
+              <Text style={styles.infoText}>✈️ <Text style={styles.bold}>L’Aéroport Fès–Saïss</Text> est l’un des aéroports les plus importants du nord du Maroc.</Text>
+              <Text style={styles.infoText}>📍 <Text style={styles.bold}>Situé à environ 15 km</Text> au sud de la ville de Fès, il dessert des vols nationaux et internationaux.</Text>
+              <Text style={styles.infoText}>🛍️ <Text style={styles.bold}>Services disponibles :</Text> restaurants, boutiques duty-free, change, location voiture, etc.</Text>
+              <Text style={styles.infoText}>📞 <Text style={styles.bold}>Contact :</Text> <Text style={styles.link} onPress={() => Linking.openURL('tel:0535624808')}>05 35 62 48 08</Text></Text>
+              <Text style={styles.infoText}>🌐 <Text style={styles.bold}>Site officiel :</Text> <Text style={styles.link} onPress={() => Linking.openURL('https://www.onda.ma')}>www.onda.ma</Text></Text>
+            </ScrollView>
+            <TouchableOpacity style={styles.closeButtonRed} onPress={() => setInfoModalVisible(false)}>
+              <Text style={styles.closeButtonText}>Fermer</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal Parking */}
       <Modal
         visible={parkingModalVisible}
         animationType="slide"
@@ -201,24 +248,38 @@ export default function SearchAndQuickAccess() {
                 ['4 à 5 heures', '16 DH/TTC', '19 DH/TTC', '-'],
                 ['5 à 12 heures', '22 DH/TTC', '24 DH/TTC', '-'],
                 ['12 à 24 heures', '40 DH/TTC', '40 DH/TTC', '48 DH/TTC'],
-                ['Ticket perdu', '40 DH/TTC/Jour', '48 DH/TTC/Jour', '48 DH/TTC/Jour']
+                ['Ticket perdu', '40 DH/TTC/Jour', '48 DH/TTC/Jour', '48 DH/TTC/Jour'],
               ].map((row, index) => (
                 <View key={index} style={styles.tableRow}>
                   {row.map((col, i) => (
-                    <Text key={i} style={styles.cell}>{col}</Text>
+                    <Text key={i} style={styles.cell}>
+                      {col}
+                    </Text>
                   ))}
                 </View>
               ))}
             </ScrollView>
+
             <View style={styles.separator} />
+
             <Text style={styles.sectionTitle}>📞 Contact</Text>
-            <TouchableOpacity style={styles.phoneButton} onPress={() => Linking.openURL('tel:0530421516')}>
+            <TouchableOpacity
+              style={styles.phoneButton}
+              onPress={() => Linking.openURL('tel:0530421516')}
+            >
               <Text style={styles.phoneButtonText}>📞 05 30 42 15 16</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.phoneButton} onPress={() => Linking.openURL('mailto:parkings@xperis-services.com')}>
+            <TouchableOpacity
+              style={styles.phoneButton}
+              onPress={() => Linking.openURL('mailto:parkings@xperis-services.com')}
+            >
               <Text style={styles.phoneButtonText}>✉️ parkings@xperis-services.com</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setParkingModalVisible(false)} style={styles.closeButton}>
+
+            <TouchableOpacity
+              onPress={() => setParkingModalVisible(false)}
+              style={styles.closeButton}
+            >
               <Text style={styles.closeText}>Fermer</Text>
             </TouchableOpacity>
           </View>
@@ -230,7 +291,16 @@ export default function SearchAndQuickAccess() {
 
 const styles = StyleSheet.create({
   container: { paddingHorizontal: 20, paddingTop: 20, backgroundColor: '#F9FBFD', flex: 1 },
-  searchCard: { backgroundColor: '#fff', borderRadius: 16, padding: 16, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 6, elevation: 4, marginBottom: 20 },
+  searchCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
+    marginBottom: 20,
+  },
   searchTitle: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 6 },
   searchSubtitle: { fontSize: 12, color: '#555', marginBottom: 16 },
   searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F4F4F4', borderRadius: 8, paddingRight: 8 },
@@ -240,7 +310,20 @@ const styles = StyleSheet.create({
   searchButtonText: { color: '#fff', fontWeight: '600', fontSize: 14 },
   sectionTitle: { fontSize: 16, fontWeight: '600', marginBottom: 14, color: '#333' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  quickItem: { width: '22%', height: 100, backgroundColor: '#fff', borderRadius: 16, justifyContent: 'center', alignItems: 'center', marginBottom: 16, shadowColor: '#000', shadowOpacity: 0.06, shadowOffset: { width: 0, height: 1 }, shadowRadius: 4, elevation: 3 },
+  quickItem: {
+    width: '22%',
+    height: 100,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 4,
+    elevation: 3,
+  },
   activeCard: { shadowOpacity: 0.15, shadowRadius: 6, backgroundColor: '#EDF4FC' },
   iconImage: { width: 38, height: 38, marginBottom: 6, resizeMode: 'contain' },
   iconLabel: { fontSize: 12, color: '#333', fontWeight: '500' },
@@ -252,12 +335,25 @@ const styles = StyleSheet.create({
   tarifDestination: { fontSize: 14, color: '#333' },
   tarifPrice: { fontSize: 14, fontWeight: '600', color: '#1a73e8' },
   separator: { height: 1, backgroundColor: '#ddd', marginVertical: 12 },
-  phoneButton: {backgroundColor: '#eaf1ff',padding: 10,borderRadius: 10,marginBottom: 6,alignItems: 'center'},
-  phoneButtonText: {color: '#1a73e8',fontWeight: '600',fontSize: 14},
+  phoneButton: {
+    backgroundColor: '#eaf1ff',
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 6,
+    alignItems: 'center',
+  },
+  phoneButtonText: { color: '#1a73e8', fontWeight: '600', fontSize: 14 },
   closeButton: { marginTop: 16, backgroundColor: '#ffdddd', padding: 10, borderRadius: 8, alignSelf: 'center' },
   closeText: { color: '#d00', fontWeight: '600' },
+  modalCard: { backgroundColor: '#fff', margin: 20, borderRadius: 16, padding: 20, elevation: 6 },
   tableHeader: { flexDirection: 'row', backgroundColor: '#e3f2fd', padding: 10, borderRadius: 8 },
   tableRow: { flexDirection: 'row', paddingVertical: 8, borderBottomWidth: 1, borderColor: '#ddd' },
   cell: { flex: 1, fontSize: 12, color: '#333' },
-  header: { fontWeight: 'bold', color: '#0d47a1' }
+  header: { fontWeight: 'bold', color: '#0d47a1' },
+  infoContent: { maxHeight: 250 },
+  infoText: { fontSize: 14, color: '#333', marginBottom: 12, lineHeight: 22 },
+  bold: { fontWeight: 'bold', color: '#000' },
+  link: { color: '#1a73e8', textDecorationLine: 'underline' },
+  closeButtonRed: { backgroundColor: '#ffdddd', paddingVertical: 10, borderRadius: 12, alignItems: 'center', marginTop: 16 },
+  closeButtonText: { color: '#d32f2f', fontWeight: '600', fontSize: 15 },
 });

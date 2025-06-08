@@ -9,7 +9,7 @@ const FlightSummary = () => {
   const [saved, setSaved] = useState<string[]>([]);
 
   useEffect(() => {
-    axios.get('http://10.1.6.88:3000/flights/short')
+    axios.get('http://192.168.11.108:3000/flights/short')
       .then(response => {
         setFlights(response.data.slice(0, 3));
         setLoading(false);

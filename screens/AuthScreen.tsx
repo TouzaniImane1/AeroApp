@@ -22,13 +22,29 @@ export default function AuthScreen() {
   const navigation = useNavigation<NavigationProp>();
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: '883380655979-23qa2vgjoqkfnqtirfv7o2lokkb4qh1i.apps.googleusercontent.com', // ⚠️ Remplace ici par ton vrai clientId
+    clientId: '883380655979-23qa2vgjoqkfnqtirfv7o2lokkb4qh1i.apps.googleusercontent.com',
   });
 
   useEffect(() => {
     if (response?.type === 'success') {
       const { authentication } = response;
       console.log('✅ Jeton Google :', authentication?.accessToken);
+
+      // Ici tu dois récupérer les infos utilisateur et le rôle depuis ton backend
+      // Par exemple (pseudo) :
+      // const userData = await fetchUserData(authentication.accessToken);
+      // Exemples statiques pour démo:
+      const userData = {
+        name: 'Imane Touzani',
+        email: 'imane@example.com',
+        photoUrl: 'https://example.com/photo.jpg',
+        role: 'admin', // ou 'user' selon la logique
+      };
+
+      // Par exemple tu utilises ton contexte Auth pour login :
+      // auth.login(userData);
+
+      // Mais ici on fait simple et on redirige vers Home
       navigation.replace('HomeScreen');
     }
   }, [response]);
@@ -40,13 +56,12 @@ export default function AuthScreen() {
       resizeMode="cover"
     >
       <SafeAreaView style={styles.overlay}>
-        <Image
-          source={require('../assets/logo-white.png')}
-          style={styles.logo}
-        />
+        <Image source={require('../assets/logo-white.png')} style={styles.logo} />
 
         <Text style={styles.title}>Bienvenue à l’Aéroport Fès–Saïss</Text>
-        <Text style={styles.subtitle}>Veuillez vous connecter ou vous inscrire pour continuer</Text>
+        <Text style={styles.subtitle}>
+          Veuillez vous connecter ou vous inscrire pour continuer
+        </Text>
 
         <TouchableOpacity
           style={[styles.button, styles.buttonPrimary]}
@@ -79,9 +94,7 @@ export default function AuthScreen() {
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
+  background: { flex: 1 },
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.6)',
@@ -122,12 +135,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  buttonPrimary: {
-    backgroundColor: '#2563EB',
-  },
-  buttonSecondary: {
-    backgroundColor: '#2563EB',
-  },
+  buttonPrimary: { backgroundColor: '#2563EB' },
+  buttonSecondary: { backgroundColor: '#2563EB' },
   buttonGoogle: {
     backgroundColor: '#fff',
     borderWidth: 1,
