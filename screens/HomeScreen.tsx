@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Image,
   Linking,
-  Dimensions
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -16,36 +15,28 @@ import ImageHeader from '../components/ImageHeader';
 import SearchAndQuickAccess from '../components/SearchAndQuickAccess';
 import FlightSummary from '../components/FlightSummary';
 import AirportServices from '../components/AirportServices';
-import { useAuth } from '../contexts/AuthContext'; // ✅ contexte utilisateur
-
-import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function HomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const { user } = useAuth(); // ✅ accès aux infos utilisateur
-
+  const { user } = useAuth();
   const scrollViewRef = useRef<ScrollView>(null);
-  const accessSectionY = useRef(0);
+  const planSectionRef = useRef<View>(null);
+  const planY = useRef(0);
 
   return (
-   <ScrollView
+    <ScrollView
       ref={scrollViewRef}
       style={{ flex: 1, backgroundColor: '#f7f8fa' }}
-      onLayout={event => {
-        accessSectionY.current = event.nativeEvent.layout.y;
-      }}
     >
       <HeaderTop />
       <ImageHeader />
-      
 
-      <View
-        onLayout={event => {
-          accessSectionY.current = event.nativeEvent.layout.y;
+      <SearchAndQuickAccess
+        onScrollToPlan={() => {
+          scrollViewRef.current?.scrollTo({ y: planY.current, animated: true });
         }}
-      >
-        <SearchAndQuickAccess />
-      </View>
+      />
 
       <View style={{ paddingHorizontal: 16 }}>
         <Text style={{ fontSize: 16, color: '#111', marginVertical: 10 }}>
@@ -62,11 +53,6 @@ export default function HomeScreen() {
           borderRadius: 12,
           alignItems: 'center',
           marginTop: 20,
-          shadowColor: '#000',
-          shadowOpacity: 0.1,
-          shadowOffset: { width: 0, height: 4 },
-          shadowRadius: 6,
-          elevation: 4,
         }}
         onPress={() => navigation.navigate('RealTimeFlights')}
       >
@@ -75,7 +61,14 @@ export default function HomeScreen() {
         </Text>
       </TouchableOpacity>
 
-      <View style={{ marginTop: 32, paddingHorizontal: 16 }}>
+      {/* -------- PLAN AÉROPORT -------- */}
+      <View
+        ref={planSectionRef}
+        style={{ marginTop: 32, paddingHorizontal: 16 }}
+        onLayout={event => {
+          planY.current = event.nativeEvent.layout.y;
+        }}
+      >
         <View
           style={{
             flexDirection: 'row',
@@ -85,7 +78,13 @@ export default function HomeScreen() {
           }}
         >
           <Text style={{ fontSize: 16, color: '#111' }}>Plan de l’aéroport</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('MapScreen')}>
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL(
+                'https://www.google.com/maps/place/A%C3%A9roport+de+F%C3%A8s-Sa%C3%AFss%D8%8C+A%C3%A9roport+Fes+Sa%C3%AFss+Oulad+Tayeb,+Fes+30000%E2%80%AD/@33.9306646,-4.9841368,16z/data=!4m6!3m5!1s0xd9f8b6da90a7f4f:0x4a9f848151d96b0!8m2!3d33.9306646!4d-4.9841368!16zL20vMGZtOWxu?g_ep=Eg1tbF8yMDI1MDYwNF8wIJvbDyoASAJQAg%3D%3D'
+              )
+            }
+          >
             <Text style={{ color: '#2563EB', fontSize: 14 }}>Explorer</Text>
           </TouchableOpacity>
         </View>
@@ -124,7 +123,11 @@ export default function HomeScreen() {
                 borderWidth: 1,
                 borderColor: '#2563EB'
               }}
-              onPress={() => navigation.navigate('MapScreen')}
+              onPress={() =>
+                Linking.openURL(
+                  'https://www.google.com/maps/place/A%C3%A9roport+de+F%C3%A8s-Sa%C3%AFss%D8%8C+A%C3%A9roport+Fes+Sa%C3%AFss+Oulad+Tayeb,+Fes+30000%E2%80%AD/@33.9306646,-4.9841368,16z/data=!4m6!3m5!1s0xd9f8b6da90a7f4f:0x4a9f848151d96b0!8m2!3d33.9306646!4d-4.9841368!16zL20vMGZtOWxu?g_ep=Eg1tbF8yMDI1MDYwNF8wIJvbDyoASAJQAg%3D%3D'
+                )
+              }
             >
               <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>
                 Ouvrir le plan interactif
@@ -134,6 +137,7 @@ export default function HomeScreen() {
         </View>
       </View>
 
+      {/* -------- SITE OFFICIEL -------- */}
       <View style={{ marginTop: 30, paddingHorizontal: 16 }}>
         <View
           style={{
@@ -144,18 +148,6 @@ export default function HomeScreen() {
           }}
         >
           <Text style={{ fontSize: 16, color: '#111' }}>Site Officiel</Text>
-          <TouchableOpacity
-            onPress={() => {
-              scrollViewRef.current?.scrollTo({
-                y: accessSectionY.current,
-                animated: true
-              });
-            }}
-          >
-            <Text style={{ color: '#2563EB', fontSize: 14 }}>
-              Tous les services
-            </Text>
-          </TouchableOpacity>
         </View>
 
         <View

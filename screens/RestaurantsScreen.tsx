@@ -15,13 +15,13 @@ const restaurants = [
     id: 'resto1',
     name: 'MEDINA',
     zone: 'Hall Public',
-    image: require('../assets/resto1.avif'),
+    image: require('../assets/resto1.jpg'),
     description: 'Restaurant de cuisine marocaine et internationale dans un cadre moderne et convivial.'
   },
   {
     id: 'resto2',
-    name: 'SUD ICE',
-    zone: 'Hall Public / Sous Douane',
+    name: 'Caffé VERO',
+    zone: 'Sous Douane',
     image: require('../assets/resto2.jpg'),
     description: 'Salon de thé et glaces artisanales. Snacks et boissons pour les voyageurs.'
   }

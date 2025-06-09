@@ -1,4 +1,4 @@
-// screens/SearchAndQuickAccess.tsx
+// ✅ SearchAndQuickAccess.tsx corrigé avec scroll vers la section plan
 import React, { useState } from 'react';
 import {
   View,
@@ -15,7 +15,6 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAuth } from '../contexts/AuthContext';
 
-// Import des icônes (assure-toi que les chemins sont corrects)
 import AirplaneIcon from '../assets/airplane-icon.png';
 import TaxiIcon from '../assets/train-icon.png';
 import ParkingIcon from '../assets/parking-icon.jpg';
@@ -37,7 +36,11 @@ const quickItems = [
   { label: 'Infos', icon: InfoIcon },
 ];
 
-export default function SearchAndQuickAccess() {
+type Props = {
+  onScrollToPlan?: () => void;
+};
+
+export default function SearchAndQuickAccess({ onScrollToPlan }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [search, setSearch] = useState('');
   const [transportModalVisible, setTransportModalVisible] = useState(false);
@@ -62,18 +65,10 @@ export default function SearchAndQuickAccess() {
         navigation.navigate('HotelsScreen');
         break;
       case 'Restaurants':
-        if (isAdmin) {
-          navigation.navigate('AdminRestaurantsScreen');
-        } else {
-          navigation.navigate('RestaurantsScreen');
-        }
+        isAdmin ? navigation.navigate('AdminRestaurantsScreen') : navigation.navigate('RestaurantsScreen');
         break;
       case 'Shopping':
-        if (isAdmin) {
-          navigation.navigate('AdminShoppingScreen');
-        } else {
-          navigation.navigate('ShoppingScreen');
-        }
+        isAdmin ? navigation.navigate('AdminShoppingScreen') : navigation.navigate('ShoppingScreen');
         break;
       case 'Transport':
         setTransportModalVisible(true);
@@ -84,6 +79,10 @@ export default function SearchAndQuickAccess() {
       case 'Infos':
         setInfoModalVisible(true);
         break;
+      case 'Plan':
+        if (onScrollToPlan) onScrollToPlan();
+        break;
+
       default:
         console.log('Accès rapide cliqué :', label);
     }
@@ -94,7 +93,6 @@ export default function SearchAndQuickAccess() {
       <View style={styles.searchCard}>
         <Text style={styles.searchTitle}>Rechercher un vol</Text>
         <Text style={styles.searchSubtitle}>Trouvez votre vol en quelques secondes</Text>
-
         <View style={styles.searchBar}>
           <Image source={SearchIcon} style={styles.searchIcon} />
           <TextInput
