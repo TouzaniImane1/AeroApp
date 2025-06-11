@@ -28,25 +28,25 @@ export default function LoginScreen() {
 
   const loginUser = async () => {
     try {
-      const response = await fetch('http://192.168.11.108:3001/api/login', {
+      const response = await fetch('http://192.168.11.102:3001/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
-      console.log('API Response:', data); // ✅ Pour debug
+      console.log('API Response:', data); 
 
       if (response.ok) {
         Alert.alert('Connexion réussie', data.message || 'Bienvenue !');
 
         const userData = data.user || data;
 
-        // ✅ Stocke les infos dans le contexte
         login({
           name: data.user?.name || 'Utilisateur',
           email: data.user?.email || email,
-          photoUrl: data.user?.photoUrl || null
+          photoUrl: data.user?.photoUrl || null,
+          role: data.user?.role || 'user'
         });
 
 
@@ -82,6 +82,11 @@ export default function LoginScreen() {
           value={password}
           onChangeText={setPassword}
         />
+
+        {/* Mot de passe oublié */}
+        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+          <Text style={styles.forgotPassword}>Mot de passe oublié ?</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={loginUser}>
           <Text style={styles.buttonText}>Se connecter</Text>
@@ -129,6 +134,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     fontSize: 16,
     paddingHorizontal: 20,
+  },
+  forgotPassword: {
+    color: '#2563EB',
+    textAlign: 'right',
+    marginBottom: 16,
+    marginTop: -8,
+    fontSize: 14,
+    fontWeight: '500',
   },
   button: {
     backgroundColor: '#2563EB',

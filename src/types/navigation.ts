@@ -13,4 +13,5 @@ export type RootStackParamList = {
   ParkingScreen: undefined;
   ProfileScreen: undefined; 
   MesVols: undefined;
+  ForgotPassword: undefined;
 };

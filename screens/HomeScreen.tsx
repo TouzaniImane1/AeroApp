@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import * as Location from 'expo-location';
 
 import HeaderTop from '../components/HeaderTop';
 import ImageHeader from '../components/ImageHeader';
@@ -23,6 +24,21 @@ export default function HomeScreen() {
   const scrollViewRef = useRef<ScrollView>(null);
   const planSectionRef = useRef<View>(null);
   const planY = useRef(0);
+
+  const openGoogleMapsWithCurrentLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Permission de localisation refusée');
+      return;
+    }
+
+    const location = await Location.getCurrentPositionAsync({});
+    const latitude = location.coords.latitude;
+    const longitude = location.coords.longitude;
+
+    const url = `https://www.google.com/maps/dir/?api=1&origin=${latitude},${longitude}&destination=Aéroport+Fès-Saïss&travelmode=driving`;
+    Linking.openURL(url);
+  };
 
   return (
     <ScrollView
@@ -78,13 +94,7 @@ export default function HomeScreen() {
           }}
         >
           <Text style={{ fontSize: 16, color: '#111' }}>Plan de l’aéroport</Text>
-          <TouchableOpacity
-            onPress={() =>
-              Linking.openURL(
-                'https://www.google.com/maps/place/A%C3%A9roport+de+F%C3%A8s-Sa%C3%AFss%D8%8C+A%C3%A9roport+Fes+Sa%C3%AFss+Oulad+Tayeb,+Fes+30000%E2%80%AD/@33.9306646,-4.9841368,16z/data=!4m6!3m5!1s0xd9f8b6da90a7f4f:0x4a9f848151d96b0!8m2!3d33.9306646!4d-4.9841368!16zL20vMGZtOWxu?g_ep=Eg1tbF8yMDI1MDYwNF8wIJvbDyoASAJQAg%3D%3D'
-              )
-            }
-          >
+          <TouchableOpacity onPress={openGoogleMapsWithCurrentLocation}>
             <Text style={{ color: '#2563EB', fontSize: 14 }}>Explorer</Text>
           </TouchableOpacity>
         </View>
@@ -102,7 +112,7 @@ export default function HomeScreen() {
           }}
         >
           <Image
-            source={require('../assets/plan_fes_saiss.png')}
+            source={require('../assets/plan_fes_saiss.jpg')}
             style={{ width: '100%', height: 180 }}
             resizeMode="cover"
           />
@@ -123,11 +133,7 @@ export default function HomeScreen() {
                 borderWidth: 1,
                 borderColor: '#2563EB'
               }}
-              onPress={() =>
-                Linking.openURL(
-                  'https://www.google.com/maps/place/A%C3%A9roport+de+F%C3%A8s-Sa%C3%AFss%D8%8C+A%C3%A9roport+Fes+Sa%C3%AFss+Oulad+Tayeb,+Fes+30000%E2%80%AD/@33.9306646,-4.9841368,16z/data=!4m6!3m5!1s0xd9f8b6da90a7f4f:0x4a9f848151d96b0!8m2!3d33.9306646!4d-4.9841368!16zL20vMGZtOWxu?g_ep=Eg1tbF8yMDI1MDYwNF8wIJvbDyoASAJQAg%3D%3D'
-                )
-              }
+              onPress={openGoogleMapsWithCurrentLocation}
             >
               <Text style={{ color: '#2563EB', fontWeight: 'bold' }}>
                 Ouvrir le plan interactif

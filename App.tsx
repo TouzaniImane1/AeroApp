@@ -17,6 +17,7 @@ import { RootStackParamList } from './src/types/navigation';
 import ParkingScreen from './screens/ParkingScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import MesVolsScreen from './screens/MesVolsScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -47,6 +48,8 @@ function AppNavigator() {
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="AuthFormScreen" component={AuthFormScreen} />
           <Stack.Screen name="AuthGoogleScreen" component={AuthGoogleScreen} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+
         </>
       )}
     </Stack.Navigator>

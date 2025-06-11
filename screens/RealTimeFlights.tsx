@@ -26,7 +26,7 @@ const RealTimeFlights = () => {
 
   useEffect(() => {
     axios
-      .get('http://192.168.11.108:3000/flights/full')
+      .get('http://192.168.11.102:3000/flights/full')
       .then((response) => {
         setFlights(response.data);
         setLoading(false);
